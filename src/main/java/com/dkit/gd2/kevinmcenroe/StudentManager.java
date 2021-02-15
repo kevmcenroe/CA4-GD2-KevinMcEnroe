@@ -18,21 +18,23 @@ public class StudentManager {
     // Binary search
     // CAO numbers can be sorted alphabetically
     //List<Student> students = new ArrayList<>(100);
-    HashMap<Integer, Student> students = new HashMap<Integer, Student>();
+    HashMap<Integer, Student> studentsMap = new HashMap<Integer, Student>();
 
+    // Constructor
     public StudentManager() {
-        // Hardcode some values to get started
-
-        // later, load from text file "students.dat" and populate studentsMap
-    }
-
-    public StudentManager(List<Student> students) {
-        for(Student student : students){
-            if(students.contains(student))
-                this.students.put(student.getCaoNumber(), student);
-            else
-                System.out.println("This student already exists in the map");
+        List<Student> studentsOnFile = loadStudentsFromFile();
+        System.out.println("Adding students from file to new StudentManager...");
+        for(Student student : studentsOnFile){
+            if(this.studentsMap.containsKey(student))
+                System.out.println("This student already exists in the students map");
+            else {
+                System.out.println(Colours.GREEN + "Added student with CAO number: " + student.getCaoNumber() + Colours.RESET);
+                this.studentsMap.put(student.getCaoNumber(), student);
+            }
         }
+
+        // Testing
+
     }
 
     // Adapted from my CA3 submission
@@ -57,20 +59,31 @@ public class StudentManager {
         }
         catch(FileNotFoundException fne)
         {
-            System.out.println("Unable to read students.dat");
+            System.out.println("Unable to read students.dat (FileNotFoundException)");
+        }
+        catch(NumberFormatException nfe)
+        {
+            System.out.println("Input data type does not match that required (NumberFormatException)");
         }
 
         return readStudents;
     }
 
+    private Student cloneStudent(Student studentToClone){
+        return new Student(studentToClone.getCaoNumber(), studentToClone.getDayOfBirth(), studentToClone.getPassword(), studentToClone.getEmail());
+    }
     public Student getStudent(int caoNumber) {
-        Student matchingStudent = students.get(caoNumber);
+        Student matchingStudent = this.studentsMap.get(caoNumber);
+        System.out.println("Matching student found at address " + matchingStudent);
+        Student studentClone = cloneStudent(matchingStudent);
+        System.out.println("Clone student saved to address " + studentClone);
         return matchingStudent;
     }
-//
-//    public addStudent() {
-//    }
-//
+
+    public void addStudent(Student studentToAdd) {
+        Student studentClone = cloneStudent(studentToAdd);
+    }
+
 //    public removeStudent() {
 //    }
 

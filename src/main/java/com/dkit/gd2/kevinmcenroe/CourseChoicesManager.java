@@ -10,7 +10,7 @@ package com.dkit.gd2.kevinmcenroe;
 //
 // Clone all received and returned objects - encapsulation
 
-public class CourseChoicesManager {
+public class CourseChoicesManager extends StudentManager{
 
     // reference to constructor injected studentManager
     private com.dkit.gd2.kevinmcenroe.StudentManager studentManager;
