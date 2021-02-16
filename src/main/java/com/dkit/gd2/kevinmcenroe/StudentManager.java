@@ -3,13 +3,8 @@ package com.dkit.gd2.kevinmcenroe;
 // to manipulate student objects
 
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class StudentManager {
 
@@ -25,8 +20,8 @@ public class StudentManager {
         List<Student> studentsOnFile = loadStudentsFromFile();
         System.out.println("Adding students from file to new StudentManager...");
         for(Student student : studentsOnFile){
-            if(this.studentsMap.containsKey(student))
-                System.out.println("This student already exists in the students map");
+            if(isAlreadyRegistered(student))
+                System.out.println("A student of CAO number " + student.getCaoNumber() + " already exists in the students map");
             else {
                 System.out.println(Colours.GREEN + "Added student with CAO number: " + student.getCaoNumber() + Colours.RESET);
                 this.studentsMap.put(student.getCaoNumber(), student);
@@ -72,6 +67,17 @@ public class StudentManager {
     private Student cloneStudent(Student studentToClone){
         return new Student(studentToClone.getCaoNumber(), studentToClone.getDayOfBirth(), studentToClone.getPassword(), studentToClone.getEmail());
     }
+
+    private boolean isAlreadyRegistered(Student studentToCheck){
+        if(this.studentsMap.containsKey(studentToCheck.getCaoNumber())) {
+            System.out.println("A student of CAO number " + studentToCheck.getCaoNumber() + " already exists in the students map");
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
     public Student getStudent(int caoNumber) {
         Student matchingStudent = this.studentsMap.get(caoNumber);
         System.out.println("Matching student found at address " + matchingStudent);
@@ -81,12 +87,37 @@ public class StudentManager {
     }
 
     public void addStudent(Student studentToAdd) {
-        Student studentClone = cloneStudent(studentToAdd);
+        if(isAlreadyRegistered(studentToAdd)){
+            System.out.println("A student of CAO number " + studentToAdd.getCaoNumber() + " already exists in the students map");
+        }
+        else{
+            Student studentClone = cloneStudent(studentToAdd);
+            this.studentsMap.put(studentClone.getCaoNumber(), studentClone);
+            writeToFile();
+        }
     }
 
-//    public removeStudent() {
-//    }
+    public void removeStudent(int caoNumber) {
+        this.studentsMap.remove(caoNumber);
+        writeToFile();
+    }
 
-//    isRegistered( caoNumber)
-//        students.isValid()
+    // Adapted from my CA3 submission
+    public void writeToFile()
+    {
+        try(BufferedWriter studentsFile = new BufferedWriter(new FileWriter("students.txt"))) {
+
+            Iterator studentIterator = this.studentsMap.entrySet().iterator();
+
+            while (studentIterator.hasNext()) {
+                Map.Entry mapElement = (Map.Entry)studentIterator.next();
+                Student student = (Student)mapElement.getValue();
+                studentsFile.write(student.getCaoNumber() + "," + student.getDayOfBirth() + "," + student.getPassword() + "," + student.getEmail() +"\n");
+            }
+        }
+        catch(IOException ioe)
+        {
+            System.out.println(Colours.RED + "Could not write to file (IOException)" +Colours.RESET);
+        }
+    }
 }
