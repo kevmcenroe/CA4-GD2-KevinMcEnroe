@@ -105,7 +105,7 @@ public class StudentManager {
     // Adapted from my CA3 submission
     public void writeToFile()
     {
-        try(BufferedWriter studentsFile = new BufferedWriter(new FileWriter("students.txt"))) {
+        try(BufferedWriter studentsFile = new BufferedWriter(new FileWriter("students.dat"))) {
 
             Iterator studentIterator = this.studentsMap.entrySet().iterator();
 
