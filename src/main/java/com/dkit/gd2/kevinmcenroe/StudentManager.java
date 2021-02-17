@@ -17,28 +17,16 @@ public class StudentManager {
 
     // Constructor
     public StudentManager() {
-        List<Student> studentsOnFile = loadStudentsFromFile();
-        System.out.println("Adding students from file to new StudentManager...");
-        for(Student student : studentsOnFile){
-            if(isAlreadyRegistered(student))
-                System.out.println("A student of CAO number " + student.getCaoNumber() + " already exists in the students map");
-            else {
-                System.out.println(Colours.GREEN + "Added student with CAO number: " + student.getCaoNumber() + Colours.RESET);
-                this.studentsMap.put(student.getCaoNumber(), student);
-            }
-        }
-
-        // Testing
-
+        loadStudentsFromFile(this.studentsMap, "students.dat");
     }
 
     // Adapted from my CA3 submission
-    protected List<Student> loadStudentsFromFile(){
-        List<Student> readStudents = new ArrayList<>();
+    protected void loadStudentsFromFile(Map<Integer, Student> studentMap, String readFile){
 
-        try(Scanner studentsFile = new Scanner(new BufferedReader(new FileReader("students.dat"))))
+        try(Scanner studentsFile = new Scanner(new BufferedReader(new FileReader(readFile))))
         {
             String input;
+            System.out.println("Reading students from file...");
             while(studentsFile.hasNextLine())
             {
                 input = studentsFile.nextLine();
@@ -49,19 +37,18 @@ public class StudentManager {
                 String email = data[3];
 
                 Student readStudent = new Student(caoNumber, dateOfBirth, password, email);
-                readStudents.add(readStudent);
+                studentMap.put(readStudent.getCaoNumber(), readStudent);
+                System.out.println(Colours.GREEN + "Student added to the studemt map. CAO number: " + readStudent.getCaoNumber() + Colours.RESET);
             }
         }
         catch(FileNotFoundException fne)
         {
-            System.out.println("Unable to read students.dat (FileNotFoundException)");
+            System.out.println("Unable to read file (FileNotFoundException)");
         }
         catch(NumberFormatException nfe)
         {
             System.out.println("Input data type does not match that required (NumberFormatException)");
         }
-
-        return readStudents;
     }
 
     private Student cloneStudent(Student studentToClone){
@@ -80,8 +67,9 @@ public class StudentManager {
     }
     public Student getStudent(int caoNumber) {
         Student matchingStudent = this.studentsMap.get(caoNumber);
-        System.out.println("Matching student found at address " + matchingStudent);
         Student studentClone = cloneStudent(matchingStudent);
+
+        System.out.println("Matching student found at address " + matchingStudent);
         System.out.println("Clone student saved to address " + studentClone);
         return matchingStudent;
     }
@@ -98,8 +86,13 @@ public class StudentManager {
     }
 
     public void removeStudent(int caoNumber) {
-        this.studentsMap.remove(caoNumber);
-        writeToFile();
+        if (this.studentsMap.containsKey(caoNumber)){
+            this.studentsMap.remove(caoNumber);
+            writeToFile();
+        }
+        else
+            System.out.println("A student of CAO number " + caoNumber + " does not exist in the student map");
+
     }
 
     // Adapted from my CA3 submission

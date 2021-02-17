@@ -1,5 +1,7 @@
 package com.dkit.gd2.kevinmcenroe;
 
+import java.util.Objects;
+
 public class Student {
     private int caoNumber;  // In the CAO system, cao number is unique identifier for student
     private String dateOfBirth; // yyyy-mm-dd
@@ -15,6 +17,19 @@ public class Student {
         this.dateOfBirth = student.getDayOfBirth();
         this.password = student.getPassword();
         this.email = student.getEmail();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return caoNumber == student.caoNumber && dateOfBirth.equals(student.dateOfBirth) && password.equals(student.password) && email.equals(student.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(caoNumber, dateOfBirth, password, email);
     }
 
     // Constructor
