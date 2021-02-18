@@ -19,7 +19,7 @@ public class StudentManagerTest {
 
         StudentManager studentManager = new StudentManager();
         HashMap<Integer, Student> actualMap = new HashMap<Integer, Student>();
-        studentManager.loadStudentsFromFile(actualMap, "testdata.txt");
+        studentManager.loadStudentsFromFile(actualMap, "teststudents.txt");
         assertEquals(expectedMap, actualMap);
     }
 

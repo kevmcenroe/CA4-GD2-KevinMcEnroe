@@ -19,37 +19,32 @@ import java.util.Scanner;
 
 public class CourseManager {
 
-    // Store all students in data structure
-    // Fastest access to given CAO number = the key
-    // Binary search
-    // CAO numbers can be sorted alphabetically
-    //List<Student> students = new ArrayList<>(100);
-    HashMap<Integer, Student> coursesMap = new HashMap<Integer, Student>();
+    HashMap<String, Course> coursesMap = new HashMap<String, Course>();
 
     // Constructor
     public CourseManager() {
-        loadStudentsFromFile(this.coursesMap, "courses.dat");
+        loadCoursesFromFile(this.coursesMap, "courses.dat");
     }
 
-    // Adapted from my CA3 submission
-    protected void loadStudentsFromFile(Map<Integer, Student> studentMap, String readFile){
+    // Adapted from my StudentManager
+    protected void loadCoursesFromFile(Map<String, Course> courseMap, String readFile){
 
-        try(Scanner studentsFile = new Scanner(new BufferedReader(new FileReader(readFile))))
+        try(Scanner coursesFile = new Scanner(new BufferedReader(new FileReader(readFile))))
         {
             String input;
-            System.out.println("Reading students from file...");
-            while(studentsFile.hasNextLine())
+            System.out.println("Reading courses from file...");
+            while(coursesFile.hasNextLine())
             {
-                input = studentsFile.nextLine();
+                input = coursesFile.nextLine();
                 String[] data = input.split(",");
-                int caoNumber = Integer.parseInt(data[0]);
-                String dateOfBirth = data[1];
-                String password = data[2];
-                String email = data[3];
+                String courseID = data[0];
+                String level = data[1];
+                String title = data[2];
+                String institution = data[3];
 
-                Student readStudent = new Student(caoNumber, dateOfBirth, password, email);
-                studentMap.put(readStudent.getCaoNumber(), readStudent);
-                System.out.println(Colours.GREEN + "Student added to the student map. CAO number: " + readStudent.getCaoNumber() + Colours.RESET);
+                Course readCourse = new Course(courseID, level, title, institution);
+                courseMap.put(readCourse.getCourseId(), readCourse);
+                System.out.println(Colours.GREEN + "Course added to the courses map. Course ID number: " + readCourse.getCourseId() + Colours.RESET);
             }
         }
         catch(FileNotFoundException fne)
@@ -62,13 +57,9 @@ public class CourseManager {
         }
     }
 
-    private Student cloneStudent(Student studentToClone){
-        return new Student(studentToClone.getCaoNumber(), studentToClone.getDayOfBirth(), studentToClone.getPassword(), studentToClone.getEmail());
-    }
-
-    private boolean isAlreadyRegistered(Student studentToCheck){
-        if(this.coursesMap.containsKey(studentToCheck.getCaoNumber())) {
-            System.out.println("A student of CAO number " + studentToCheck.getCaoNumber() + " already exists in the students map");
+    private boolean isAlreadyRegistered(Course courseToCheck){
+        if(this.coursesMap.containsKey(courseToCheck.getCourseId())) {
+            System.out.println("A course of course ID " + courseToCheck.getCourseId() + " already exists in the courses map");
             return true;
         }
         else{
@@ -76,47 +67,52 @@ public class CourseManager {
         }
 
     }
-    public Student getStudent(int caoNumber) {
-        Student matchingStudent = this.coursesMap.get(caoNumber);
-        Student studentClone = cloneStudent(matchingStudent);
 
-        System.out.println("Matching student found at address " + matchingStudent);
-        System.out.println("Clone student saved to address " + studentClone);
-        return matchingStudent;
+    public Course getCourse(String courseID) {
+        Course matchingCourse = this.coursesMap.get(courseID);
+        Course courseClone = new Course(matchingCourse);
+
+        System.out.println("Matching student found at address " + matchingCourse);
+        System.out.println("Clone student saved to address " + courseClone);
+        return matchingCourse;
     }
 
-    public void addStudent(Student studentToAdd) {
-        if(isAlreadyRegistered(studentToAdd)){
-            System.out.println("A student of CAO number " + studentToAdd.getCaoNumber() + " already exists in the students map");
+    public void getAllCourses(){
+        // TO DO
+    }
+
+    public void addCourse(Course courseToAdd) {
+        if(isAlreadyRegistered(courseToAdd)){
+            System.out.println("A course of course ID " + courseToAdd.getCourseId() + " already exists in the courses map");
         }
         else{
-            Student studentClone = cloneStudent(studentToAdd);
-            this.coursesMap.put(studentClone.getCaoNumber(), studentClone);
+            Course courseClone = new Course(courseToAdd);
+            this.coursesMap.put(courseClone.getCourseId(), courseClone);
             writeToFile();
         }
     }
 
-    public void removeStudent(int caoNumber) {
-        if (this.coursesMap.containsKey(caoNumber)){
-            this.coursesMap.remove(caoNumber);
+    public void removeCourse(String courseID) {
+        if (this.coursesMap.containsKey(courseID)){
+            this.coursesMap.remove(courseID);
             writeToFile();
         }
         else
-            System.out.println("A student of CAO number " + caoNumber + " does not exist in the student map");
+            System.out.println("A course of course ID " + courseID + " does not exist in the courses map");
 
     }
 
-    // Adapted from my CA3 submission
+    // Adapted from my StudentManager
     public void writeToFile()
     {
         try(BufferedWriter coursesFile = new BufferedWriter(new FileWriter("courses.dat"))) {
 
-            Iterator studentIterator = this.coursesMap.entrySet().iterator();
+            Iterator courseIterator = this.coursesMap.entrySet().iterator();
 
-            while (studentIterator.hasNext()) {
-                Map.Entry mapElement = (Map.Entry)studentIterator.next();
-                Student student = (Student)mapElement.getValue();
-                coursesFile.write(student.getCaoNumber() + "," + student.getDayOfBirth() + "," + student.getPassword() + "," + student.getEmail() +"\n");
+            while (courseIterator.hasNext()) {
+                Map.Entry mapElement = (Map.Entry)courseIterator.next();
+                Course course = (Course)mapElement.getValue();
+                coursesFile.write(course.getCourseId() + "," + course.getLevel() + "," + course.getTitle() + "," + course.getInstitution() +"\n");
             }
         }
         catch(IOException ioe)
