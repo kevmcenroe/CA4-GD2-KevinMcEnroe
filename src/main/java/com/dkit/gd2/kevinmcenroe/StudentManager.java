@@ -10,9 +10,6 @@ public class StudentManager {
 
     // Store all students in data structure
     // Fastest access to given CAO number = the key
-    // Binary search
-    // CAO numbers can be sorted alphabetically
-    //List<Student> students = new ArrayList<>(100);
     HashMap<Integer, Student> studentsMap = new HashMap<Integer, Student>();
 
     // Constructor
@@ -38,7 +35,7 @@ public class StudentManager {
 
                 Student readStudent = new Student(caoNumber, dateOfBirth, password, email);
                 studentMap.put(readStudent.getCaoNumber(), readStudent);
-                System.out.println(Colours.GREEN + "Student added to the studemt map. CAO number: " + readStudent.getCaoNumber() + Colours.RESET);
+                System.out.println(Colours.GREEN + "Student added to the student map. CAO number: " + readStudent.getCaoNumber() + Colours.RESET);
             }
         }
         catch(FileNotFoundException fne)
@@ -50,11 +47,12 @@ public class StudentManager {
             System.out.println("Input data type does not match that required (NumberFormatException)");
         }
     }
-
+/*
+    Retired in favour of the Student copy constructor
     private Student cloneStudent(Student studentToClone){
         return new Student(studentToClone.getCaoNumber(), studentToClone.getDayOfBirth(), studentToClone.getPassword(), studentToClone.getEmail());
     }
-
+*/
     private boolean isAlreadyRegistered(Student studentToCheck){
         if(this.studentsMap.containsKey(studentToCheck.getCaoNumber())) {
             System.out.println("A student of CAO number " + studentToCheck.getCaoNumber() + " already exists in the students map");
@@ -67,7 +65,7 @@ public class StudentManager {
     }
     public Student getStudent(int caoNumber) {
         Student matchingStudent = this.studentsMap.get(caoNumber);
-        Student studentClone = cloneStudent(matchingStudent);
+        Student studentClone = new Student(matchingStudent);
 
         System.out.println("Matching student found at address " + matchingStudent);
         System.out.println("Clone student saved to address " + studentClone);
@@ -79,7 +77,7 @@ public class StudentManager {
             System.out.println("A student of CAO number " + studentToAdd.getCaoNumber() + " already exists in the students map");
         }
         else{
-            Student studentClone = cloneStudent(studentToAdd);
+            Student studentClone = new Student(studentToAdd);
             this.studentsMap.put(studentClone.getCaoNumber(), studentClone);
             writeToFile();
         }

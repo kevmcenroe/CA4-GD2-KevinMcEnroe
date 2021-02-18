@@ -10,9 +10,12 @@ public class Course {
     // Copy Constructor
     // Accepts a Course object as an argument and copies all the field values
     // into a new Course object. Returns the new cloned object.
-    // (add here)
-
-
+    public Course(Course course) {
+        this.courseId = course.courseId;
+        this.level = course.level;
+        this.title = course.title;
+        this.institution = course.institution;
+    }
 
     // Constructor
     public Course(String courseId, String level,String title, String institution) {
