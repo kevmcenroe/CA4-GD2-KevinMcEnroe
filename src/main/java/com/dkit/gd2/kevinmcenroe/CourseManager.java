@@ -2,10 +2,7 @@ package com.dkit.gd2.kevinmcenroe;
 
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * CoursesManager
@@ -78,7 +75,15 @@ public class CourseManager {
     }
 
     public void getAllCourses(){
-        // TO DO
+        List<Course> allCourses = new ArrayList<>();
+        Iterator courseIterator = this.coursesMap.entrySet().iterator();
+
+        while (courseIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)courseIterator.next();
+            Course course = (Course)mapElement.getValue();
+            allCourses.add(course);
+            System.out.println(Colours.GREEN + "Added course " + course + " to the list of all courses" +Colours.RESET);
+        }
     }
 
     public void addCourse(Course courseToAdd) {
@@ -99,7 +104,6 @@ public class CourseManager {
         }
         else
             System.out.println("A course of course ID " + courseID + " does not exist in the courses map");
-
     }
 
     // Adapted from my StudentManager
