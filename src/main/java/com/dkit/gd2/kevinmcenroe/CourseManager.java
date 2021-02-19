@@ -74,7 +74,7 @@ public class CourseManager {
         return matchingCourse;
     }
 
-    public void getAllCourses(){
+    public List<Course> getAllCourses(){
         List<Course> allCourses = new ArrayList<>();
         Iterator courseIterator = this.coursesMap.entrySet().iterator();
 
@@ -84,6 +84,7 @@ public class CourseManager {
             allCourses.add(course);
             System.out.println(Colours.GREEN + "Added course " + course + " to the list of all courses" +Colours.RESET);
         }
+        return allCourses;
     }
 
     public void addCourse(Course courseToAdd) {
