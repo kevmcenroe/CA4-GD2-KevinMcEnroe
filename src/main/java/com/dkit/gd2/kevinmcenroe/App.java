@@ -87,7 +87,11 @@ public class App
                         loop = false;
                         break; // exit the loop
                     case LOG_IN:
-                        courseChoicesManager.requestLogin();
+                        boolean loggedIn = courseChoicesManager.requestLogin();
+                        if(loggedIn)
+                            // CALL NEXT MENU
+                            // NOTE TO SELF: THIS IS WHERE I LEFT OFF
+                            // -----------------------------------------------------------------
                         break;
                 }
             }

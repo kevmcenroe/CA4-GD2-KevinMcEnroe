@@ -66,22 +66,20 @@ public class StudentManager {
 
     public boolean isRegistered(int caoNumber){
         if(this.studentsMap.containsKey(caoNumber)){
-            System.out.println("A student of CAO number " + caoNumber + " already exists in the students map");
             return true;
         }
         else{
             return false;
         }
-
     }
 
     public Student getStudent(int caoNumber) {
         Student matchingStudent = this.studentsMap.get(caoNumber);
         Student studentClone = new Student(matchingStudent);
 
-        System.out.println("Matching student found at address " + matchingStudent);
-        System.out.println("Clone student saved to address " + studentClone);
-        return matchingStudent;
+        //System.out.println("Matching CAO number located");
+        //System.out.println("Returning clone of student with CAO number " + caoNumber);
+        return studentClone;
     }
 
     public void addStudent(Student studentToAdd) {

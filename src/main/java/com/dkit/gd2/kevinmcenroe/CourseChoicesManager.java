@@ -42,7 +42,7 @@ public class CourseChoicesManager extends StudentManager{
         if(studentManager.studentsMap.containsKey(caoNumber))
             matchingStudent = studentManager.studentsMap.get(caoNumber);
         else{
-            System.out.println("A student of CAO number " + caoNumber + " does not exist in the student map");
+            System.out.println(Colours.RED + "A student of CAO number " + caoNumber + " does not exist in the student map" + Colours.RESET);
         }
         return matchingStudent;
     }
@@ -103,30 +103,37 @@ public class CourseChoicesManager extends StudentManager{
     }
 
     boolean login(int caoNumber, String dateOfBirth, String password) {
-        if (this.studentManager.isRegistered(caoNumber)){
+        String invalidDetails = "";
+
+        if(this.studentManager.isRegistered(caoNumber)){
             Student student = this.studentManager.getStudent(caoNumber);
-            if(dateOfBirth == student.getDayOfBirth()) {
-                if (password == student.getPassword()){
-                    System.out.println("Successful log in");
+
+            if(dateOfBirth.equals(student.getDayOfBirth())) {
+
+                if (password.equals(student.getPassword())){
+
+                    System.out.println(Colours.GREEN + "Successful log in" + Colours.RESET);
                     return true;
                 }
                 else
-                    System.out.println("Incorrect password");
+                    invalidDetails+="Incorrect Password [Hint: " + student.getPassword() + "]";
             }
-            else{
-                System.out.println("Incorrect date of birth");
-            }
-            System.out.println("CAO Number does not exist");
+            else
+                invalidDetails+="Incorrect Date of Birth [Hint: " + student.getDayOfBirth() + "]";
         }
+        else
+            invalidDetails+="Incorrect CAO Number";
+
+        System.out.println(Colours.RED + invalidDetails + Colours.RESET);
         return false;
     }
 
-    public void requestLogin(){
+    public boolean requestLogin(){
         int caoNum = Integer.parseInt(getInput("CAO Number"));
         String dateOfBirth = getInput("Date of Birth");
         String password = getInput("Password");
 
-        login(caoNum, dateOfBirth, password);
+        return login(caoNum, dateOfBirth, password);
     }
 
 
