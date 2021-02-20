@@ -10,8 +10,7 @@ package com.dkit.gd2.kevinmcenroe;
 //
 // Clone all received and returned objects - encapsulation
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class CourseChoicesManager extends StudentManager{
 
@@ -32,7 +31,6 @@ public class CourseChoicesManager extends StudentManager{
     // the constructor.
     // This is called "Dependency Injection", meaning that we
     // inject (or pass in) objects that this class requires to do its job.
-    //
     CourseChoicesManager(com.dkit.gd2.kevinmcenroe.StudentManager studentManager, CourseManager courseManager) {
         this.studentManager = studentManager;
         this.courseManager = courseManager;
@@ -59,38 +57,67 @@ public class CourseChoicesManager extends StudentManager{
         return matchingCourse;
     }
 
-    //Pseudocode below is not final. This is my initial breakdown.
+    public List<Course> getStudentChoices(String caoNumber){
+        ArrayList<Course> studentChoices = null;
+        if(studentManager.studentsMap.containsKey(caoNumber)) {
+            studentChoices = courseChoices.get(caoNumber);
+        }
+        else{
 
-    public void getStudentChoices(){
-        //TO DO - READ BRIEF
-        //Maybe take input from a menu first
-        //Feed that into a map of key caoNumber
-        //Then search for a match in the map
+        }
+        return studentChoices;
     }
 
-    void updateChoices() {
-        //TO DO - READ BRIEF
-        //Search in map for matching caoNumber provided
-        //Get reference to the courseChoices of that student
-        //Take input/updated values from menu
-        //Overwrite existing data in map with new values provided
-        //Handle exceptions!
+    void updateChoices(String caoNumber, ArrayList<String> newCourseIDs) {
+
+        if(studentManager.studentsMap.containsKey(caoNumber)) {
+            ArrayList<Course> newCourses = new ArrayList<Course>(newCourseIDs.size());
+
+            for(String courseID : newCourseIDs){
+                if(courseDetails.containsKey(courseID)){
+                    Course course = courseDetails.get(courseID);
+                    newCourses.add(course);
+                }
+                else{
+                    System.out.println("Course ID " + courseID + " does not exist in the course map");
+                }
+
+            }
+
+            courseChoices.get(caoNumber).clear();
+            courseChoices.get(caoNumber).addAll(newCourses);
+        }
     }
 
-    public void getAllCourses() {
-        //TO DO - READ BRIEF
-        //Has to return a LIST of all courses
-        //Cycle through courseDetails map perhaps
-        //Return their data, maybe output it too
+    public List<Course> getAllCourses() {
+        List<Course> allCourses = new ArrayList<>();
+        Iterator courseIterator = this.courseDetails.entrySet().iterator();
+
+        while (courseIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)courseIterator.next();
+            Course course = (Course)mapElement.getValue();
+            allCourses.add(course);
+            System.out.println(Colours.GREEN + "Added course " + course + " to the list of all courses" +Colours.RESET);
+        }
+        return allCourses;
     }
 
-    boolean login() {
-        //TO DO - READ BRIEF
-        //Take input via menu for caoNumber, dateOfBirth etc
-        //Check if they are a perfect match with any of the students in students.dat
-        //If there is a match, allow the menu system to continue maybe
-        return true;
+    boolean login(int caoNumber, String dateOfBirth, String password) {
+        if (this.studentManager.isRegistered(caoNumber)){
+            Student student = this.studentManager.getStudent(caoNumber);
+            if(dateOfBirth == student.getDayOfBirth()) {
+                if (password == student.getPassword()){
+                    System.out.println("Successful log in");
+                    return true;
+                }
+                else
+                    System.out.println("Incorrect password");
+            }
+            else{
+                System.out.println("Incorrect date of birth");
+            }
+            System.out.println("CAO Number does not exist");
+        }
+        return false;
     }
-
-
 }

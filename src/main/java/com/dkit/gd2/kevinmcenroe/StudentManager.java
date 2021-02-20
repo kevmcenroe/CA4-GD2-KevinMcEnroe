@@ -53,7 +53,7 @@ public class StudentManager {
         return new Student(studentToClone.getCaoNumber(), studentToClone.getDayOfBirth(), studentToClone.getPassword(), studentToClone.getEmail());
     }
 */
-    private boolean isAlreadyRegistered(Student studentToCheck){
+    public boolean isRegistered(Student studentToCheck){
         if(this.studentsMap.containsKey(studentToCheck.getCaoNumber())) {
             System.out.println("A student of CAO number " + studentToCheck.getCaoNumber() + " already exists in the students map");
             return true;
@@ -63,6 +63,18 @@ public class StudentManager {
         }
 
     }
+
+    public boolean isRegistered(int caoNumber){
+        if(this.studentsMap.containsKey(caoNumber)){
+            System.out.println("A student of CAO number " + caoNumber + " already exists in the students map");
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
     public Student getStudent(int caoNumber) {
         Student matchingStudent = this.studentsMap.get(caoNumber);
         Student studentClone = new Student(matchingStudent);
@@ -73,7 +85,7 @@ public class StudentManager {
     }
 
     public void addStudent(Student studentToAdd) {
-        if(isAlreadyRegistered(studentToAdd)){
+        if(isRegistered(studentToAdd)){
             System.out.println("A student of CAO number " + studentToAdd.getCaoNumber() + " already exists in the students map");
         }
         else{
