@@ -120,4 +120,27 @@ public class CourseChoicesManager extends StudentManager{
         }
         return false;
     }
+
+    public void requestLogin(){
+        int caoNum = Integer.parseInt(getInput("CAO Number"));
+        String dateOfBirth = getInput("Date of Birth");
+        String password = getInput("Password");
+
+        login(caoNum, dateOfBirth, password);
+    }
+
+
+
+
+    public static Scanner keyboard = new Scanner(System.in);
+
+    //Adapted from my CA3 submission
+    private String getInput(String requested) {
+        String input;
+        System.out.print("Please enter " + requested + " :>");
+
+        input = keyboard.nextLine();
+        return input;
+    }
+
 }

@@ -36,11 +36,11 @@ public class App
         // so we 'inject' or pass-in these objects.
         //
         System.out.println("TEST AAAA");
-        com.dkit.gd2.kevinmcenroe.CourseChoicesManager mgr = new com.dkit.gd2.kevinmcenroe.CourseChoicesManager(studentManager, courseManager);
+        com.dkit.gd2.kevinmcenroe.CourseChoicesManager courseChoicesManager = new com.dkit.gd2.kevinmcenroe.CourseChoicesManager(studentManager, courseManager);
 
         // display a menu to do things
         // manual testing of mgr public interface
-        doMainMenuLoop(studentManager, courseManager);
+        doMainMenuLoop(studentManager, courseManager, courseChoicesManager);
         System.out.println("TEST TEST");
 //        if ( mgr.login(22224444, "xxxx","bbbb") )
 //        {
@@ -57,7 +57,7 @@ public class App
     }
 
     //Adapted from my CA3 submission
-    private void doMainMenuLoop(StudentManager studentManager, CourseManager courseManager)
+    private void doMainMenuLoop(StudentManager studentManager, CourseManager courseManager, CourseChoicesManager courseChoicesManager)
     {
         boolean loop = true;
         int option = -1;
@@ -87,11 +87,8 @@ public class App
                         loop = false;
                         break; // exit the loop
                     case LOG_IN:
-                        doLogInMainMenuLoop();
+                        courseChoicesManager.requestLogin();
                         break;
-                    /*case DISPLAY_BOOKING_MENU:
-                        doComputerBookingMainMenuLoop(bookingDB);
-                        break;*/
                 }
             }
             catch(InputMismatchException ime)
@@ -107,9 +104,18 @@ public class App
         System.out.println("Thanks for using the app");
     }
 
-    private void doLogInMainMenuLoop(){
+    //Adapted from my CA3 submission
+    private String requestInput(String requested) {
+        String input;
+        System.out.print("Please enter " + requested + " :>");
 
-    };
+        input = keyboard.nextLine();
+        return input;
+    }
+
+    private void printOutput(){
+
+    }
 
     //Adapted from my CA3 submission
     private void printMainMenu()
