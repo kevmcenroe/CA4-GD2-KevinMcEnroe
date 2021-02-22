@@ -57,18 +57,18 @@ public class CourseChoicesManager extends StudentManager{
         return matchingCourse;
     }
 
-    public List<Course> getStudentChoices(String caoNumber){
+    public List<Course> getStudentChoices(int caoNumber){
         ArrayList<Course> studentChoices = null;
         if(studentManager.studentsMap.containsKey(caoNumber)) {
             studentChoices = courseChoices.get(caoNumber);
         }
         else{
-
+            System.out.println("CAO number " + caoNumber + " cannot be found in the student map");
         }
         return studentChoices;
     }
 
-    void updateChoices(String caoNumber, ArrayList<String> newCourseIDs) {
+    void updateChoices(int caoNumber, ArrayList<String> newCourseIDs) {
 
         if(studentManager.studentsMap.containsKey(caoNumber)) {
             ArrayList<Course> newCourses = new ArrayList<Course>(newCourseIDs.size());
@@ -102,6 +102,27 @@ public class CourseChoicesManager extends StudentManager{
         return allCourses;
     }
 
+    public void printStudentChoices(int caoNumber){
+        try{
+            if(getStudentChoices(caoNumber).size() > 0) {
+            List<Course> choices = getStudentChoices(caoNumber);
+            /*ArrayList<Course> choices = new ArrayList<>();
+            choices.addAll(getStudentChoices(caoNumber));
+            */
+
+            //for (Course choice : choices) {
+                //System.out.println(choice);
+            //}
+            }
+            else{
+                System.out.println("You have not specified any course choices yet");
+            }
+        }
+        catch(NullPointerException npe){
+            System.out.println(npe.getMessage());
+        }
+    }
+
     boolean login(int caoNumber, String dateOfBirth, String password) {
         String invalidDetails = "";
 
@@ -128,12 +149,15 @@ public class CourseChoicesManager extends StudentManager{
         return false;
     }
 
-    public boolean requestLogin(){
+    public Student requestLogin(){
         int caoNum = Integer.parseInt(getInput("CAO Number"));
         String dateOfBirth = getInput("Date of Birth");
         String password = getInput("Password");
 
-        return login(caoNum, dateOfBirth, password);
+        if(login(caoNum, dateOfBirth, password))
+            return studentManager.getStudent(caoNum);
+        else
+            return null;
     }
 
 
