@@ -148,7 +148,7 @@ public class App
                         courseChoicesManager.printStudentChoices(student.getCaoNumber());
                         break;
                     case UPDATE_COURSE_CHOICES:
-                        //courseChoicesManager.updateChoices(student.getCaoNumber());
+                        courseChoicesManager.requestUpdateChoices(student.getCaoNumber());
                         break;
                 }
             }

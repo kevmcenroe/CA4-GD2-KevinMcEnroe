@@ -10,6 +10,7 @@ package com.dkit.gd2.kevinmcenroe;
 //
 // Clone all received and returned objects - encapsulation
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class CourseChoicesManager extends StudentManager{
@@ -21,10 +22,14 @@ public class CourseChoicesManager extends StudentManager{
     private CourseManager courseManager;
 
     // Store all the Course details -  fast access
-    HashMap<String, Course> courseDetails = new HashMap<String, Course>();
+    // Stores all of the available courses by code
+    private HashMap<String, Course> courseDetails = new HashMap<String, Course>();
 
     // caoNumber, course selection list - for fast access
-    HashMap<String, ArrayList<Course>> courseChoices = new HashMap<String, ArrayList<Course>>();
+    //private HashMap<String, String> courseCodes = new HashMap<String, String>();
+
+    // caoNumber, arraylist of course codes relating to choices
+    private HashMap<Integer, ArrayList<Course>> studentCourseChoices = new HashMap<Integer, ArrayList<Course>>();
 
     // CourseChoicesManager DEPENDS on both the StudentManager and CourseManager to access
     // student details and course details.  So, we receive a reference to each via
@@ -34,6 +39,14 @@ public class CourseChoicesManager extends StudentManager{
     CourseChoicesManager(com.dkit.gd2.kevinmcenroe.StudentManager studentManager, CourseManager courseManager) {
         this.studentManager = studentManager;
         this.courseManager = courseManager;
+
+        for(Course course : courseManager.getAllCourses()){
+            courseDetails.put(course.getCourseId(), course);
+            System.out.println(Colours.GREEN + "Added " + course.getCourseId() + " to the course details map" + Colours.RESET);
+        }
+    }
+
+    public void prepareCourseChoices(Student student){
 
     }
 
@@ -60,7 +73,7 @@ public class CourseChoicesManager extends StudentManager{
     public List<Course> getStudentChoices(int caoNumber){
         ArrayList<Course> studentChoices = null;
         if(studentManager.studentsMap.containsKey(caoNumber)) {
-            studentChoices = courseChoices.get(caoNumber);
+            studentChoices = studentCourseChoices.get(caoNumber);
         }
         else{
             System.out.println("CAO number " + caoNumber + " cannot be found in the student map");
@@ -70,22 +83,26 @@ public class CourseChoicesManager extends StudentManager{
 
     void updateChoices(int caoNumber, ArrayList<String> newCourseIDs) {
 
+        if(getStudentChoices(caoNumber) == null) {
+            createStudentCourseChoices(caoNumber);
+        }
+
         if(studentManager.studentsMap.containsKey(caoNumber)) {
-            ArrayList<Course> newCourses = new ArrayList<Course>(newCourseIDs.size());
+            ArrayList<Course> chosenCourses = new ArrayList<>(newCourseIDs.size());
 
             for(String courseID : newCourseIDs){
                 if(courseDetails.containsKey(courseID)){
                     Course course = courseDetails.get(courseID);
-                    newCourses.add(course);
+                    chosenCourses.add(course);
+                    System.out.println("Added " + course);
                 }
                 else{
                     System.out.println("Course ID " + courseID + " does not exist in the course map");
                 }
-
             }
 
-            courseChoices.get(caoNumber).clear();
-            courseChoices.get(caoNumber).addAll(newCourses);
+            studentCourseChoices.get(caoNumber).clear();
+            studentCourseChoices.put(caoNumber, chosenCourses);
         }
     }
 
@@ -93,34 +110,56 @@ public class CourseChoicesManager extends StudentManager{
         List<Course> allCourses = new ArrayList<>();
         Iterator courseIterator = this.courseDetails.entrySet().iterator();
 
+        if(courseIterator.hasNext())
         while (courseIterator.hasNext()) {
             Map.Entry mapElement = (Map.Entry)courseIterator.next();
             Course course = (Course)mapElement.getValue();
             allCourses.add(course);
             System.out.println(Colours.GREEN + "Added course " + course + " to the list of all courses" +Colours.RESET);
         }
+        else
+            System.out.println(Colours.RED + "The administrator has not yet populated the course list" + Colours.RESET);
         return allCourses;
     }
 
     public void printStudentChoices(int caoNumber){
         try{
-            if(getStudentChoices(caoNumber).size() > 0) {
-            List<Course> choices = getStudentChoices(caoNumber);
-            /*ArrayList<Course> choices = new ArrayList<>();
-            choices.addAll(getStudentChoices(caoNumber));
-            */
+            if(getStudentChoices(caoNumber) == null) {
+                createStudentCourseChoices(caoNumber);
 
-            //for (Course choice : choices) {
-                //System.out.println(choice);
-            //}
-            }
-            else{
-                System.out.println("You have not specified any course choices yet");
+                List<Course> choices = getStudentChoices(caoNumber);
+
+                for (Course choice : choices) {
+                    System.out.println(choice);
+                }
             }
         }
         catch(NullPointerException npe){
-            System.out.println(npe.getMessage());
+            System.out.println(Colours.RED + "NullPointerException" + Colours.RESET);
         }
+    }
+
+    public void requestUpdateChoices(int caoNumber){
+        ArrayList<String> newChoicesByCourseID = new ArrayList<>();
+        System.out.println("Please enter your 8 chosen courses by course code in order of preference");
+        for (int i=1; i<9; i++){
+            String courseCode = getInput("course of preference " + i);
+
+            if(courseDetails.containsKey(courseCode)){
+                newChoicesByCourseID.add(courseCode);
+            }
+            else{
+                System.out.println(Colours.RED + "A course of ID " + courseCode + " does not exist. Please enter a valid ID" + Colours.RESET);
+                i--;
+            }
+        }
+
+        updateChoices(caoNumber, newChoicesByCourseID);
+    }
+
+    private void createStudentCourseChoices(int caoNumber){
+        ArrayList<Course> choices = new ArrayList<>(100);
+        this.studentCourseChoices.put(caoNumber, choices);
     }
 
     boolean login(int caoNumber, String dateOfBirth, String password) {
