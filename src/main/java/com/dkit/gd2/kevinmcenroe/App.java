@@ -87,17 +87,14 @@ public class App
                     case QUIT_APPLICATION:
                         loop = false;
                         break; // exit the loop
-                    case STUDENT_LOG_IN:
+                    case STUDENT:
                         Student loggedIn = courseChoicesManager.requestLogin();
                         if(loggedIn != null)
                             doLoggedInMenuLoop(studentManager, courseChoicesManager, loggedIn);
                         else
                             System.out.println("IT WAS NULL");
                         break;
-                    case COURSE_PORTAL:
-
-                        break;
-                    case STUDENT_PORTAL:
+                    case ADMINISTRATOR:
 
                         break;
                 }
@@ -141,15 +138,21 @@ public class App
                 LoggedInMenu menuOption = LoggedInMenu.values()[option];
                 switch (menuOption)
                 {
+                    case DISPLAY_A_COURSE:
+
+                        break; // exit the loop
+                    case DISPLAY_ALL_COURSES:
+                        courseChoicesManager.displayAllCourses();
+                        break; // exit the loop
+                    case DISPLAY_CURRENT_CHOICES:
+                        courseChoicesManager.printStudentChoices(student.getCaoNumber());
+                        break;
+                    case UPDATE_CHOICES:
+                        courseChoicesManager.requestUpdateChoices(student.getCaoNumber());
+                        break;
                     case LOG_OUT:
                         loop = false;
                         break; // exit the loop
-                    case VIEW_COURSE_CHOICES:
-                        courseChoicesManager.printStudentChoices(student.getCaoNumber());
-                        break;
-                    case UPDATE_COURSE_CHOICES:
-                        courseChoicesManager.requestUpdateChoices(student.getCaoNumber());
-                        break;
                 }
             }
             catch(InputMismatchException ime)
