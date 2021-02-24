@@ -70,6 +70,8 @@ public class CourseChoicesManager extends StudentManager{
     }
 
     public void displayCourseDetails(){
+        System.out.println("Enter course ID from the list below to view corresponding course details");
+        printAvailableCourses();
         String courseID = getInput("Course ID");
         if(courseManager.coursesMap.containsKey(courseID))
             System.out.println(Colours.GREEN + getCourseDetails(courseID) + Colours.RESET);
@@ -80,12 +82,11 @@ public class CourseChoicesManager extends StudentManager{
 
     public List<Course> getStudentChoices(int caoNumber){
         ArrayList<Course> studentChoices = null;
-        if(studentManager.studentsMap.containsKey(caoNumber)) {
+        if(studentManager.studentsMap.containsKey(caoNumber))
             studentChoices = studentCourseChoices.get(caoNumber);
-        }
-        else{
+        else
             System.out.println("CAO number " + caoNumber + " cannot be found in the student map");
-        }
+
         return studentChoices;
     }
 

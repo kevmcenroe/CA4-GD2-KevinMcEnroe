@@ -24,41 +24,19 @@ public class App
 
     private void start() {
 
-        // load students
+        // Loading of students initiated here
         com.dkit.gd2.kevinmcenroe.StudentManager studentManager = new com.dkit.gd2.kevinmcenroe.StudentManager();
 
-        // load courses
-        CourseManager courseManager= new CourseManager();
-
-        // load manager to provide functionality to allow a student
-        // to login and add/update their course selections
-        // This CourseChoicesManager component depends on the
-        // StudentManager and the CourseManager,
-        // so we 'inject' or pass-in these objects.
-        //
+        // Loading of courses initiated here
+        CourseManager courseManager = new CourseManager();
 
         com.dkit.gd2.kevinmcenroe.CourseChoicesManager courseChoicesManager = new com.dkit.gd2.kevinmcenroe.CourseChoicesManager(studentManager, courseManager);
 
-        // display a menu to do things
-        // manual testing of mgr public interface
-        doMainMenuLoop(studentManager, courseChoicesManager);
-
-//        if ( mgr.login(22224444, "xxxx","bbbb") )
-//        {
-//            Student student = mgr.getStudentDetails(22224444);
-//
-//            System.out.println("Student: " + student);
-//        }
-//        else
-//            System.out.println("Not logged in - try again");
-
-
-        //mgr.saveToFile();
-
+        doMainMenuLoop(studentManager, courseChoicesManager, courseManager);
     }
 
     //Adapted from my CA3 submission
-    private void doMainMenuLoop(StudentManager studentManager, CourseChoicesManager courseChoicesManager)
+    private void doMainMenuLoop(StudentManager studentManager, CourseChoicesManager courseChoicesManager, CourseManager courseManager)
     {
         boolean loop = true;
         int option = -1;
@@ -69,17 +47,12 @@ public class App
             {
                 String input = keyboard.nextLine();
                 if(input.isEmpty() || input.length() > 1)
-                {
                     throw new IllegalArgumentException();
-                }
                 else
-                {
                     option = Integer.parseInt(input);
-                }
+
                 if(option < 0 || option >= MainMenu.values().length)
-                {
                     throw new IllegalArgumentException();
-                }
 
                 MainMenu menuOption = MainMenu.values()[option];
                 switch (menuOption)
@@ -93,7 +66,7 @@ public class App
                             doLoggedInMenuLoop(studentManager, courseChoicesManager, loggedIn);
                         break;
                     case ADMINISTRATOR:
-
+                        doAdminMenuLoop(studentManager, courseManager);
                         break;
                 }
             }
@@ -121,17 +94,12 @@ public class App
             {
                 String input = keyboard.nextLine();
                 if(input.isEmpty() || input.length() > 1)
-                {
                     throw new IllegalArgumentException();
-                }
                 else
-                {
                     option = Integer.parseInt(input);
-                }
+
                 if(option < 0 || option >= LoggedInMenu.values().length)
-                {
                     throw new IllegalArgumentException();
-                }
 
                 LoggedInMenu menuOption = LoggedInMenu.values()[option];
                 switch (menuOption)
@@ -141,7 +109,7 @@ public class App
                         break; // exit the loop
                     case DISPLAY_ALL_COURSES:
                         courseChoicesManager.displayAllCourses();
-                        break; // exit the loop
+                        break;
                     case DISPLAY_CURRENT_CHOICES:
                         courseChoicesManager.printStudentChoices(student.getCaoNumber());
                         break;
@@ -151,6 +119,66 @@ public class App
                     case LOG_OUT:
                         loop = false;
                         break; // exit the loop
+                }
+            }
+            catch(InputMismatchException ime)
+            {
+                System.out.println(Colours.RED + "Please enter a valid option (InputMismatchException - " + ime.getMessage() + ")" + Colours.RESET);
+                keyboard.nextLine();
+            }
+            catch(IllegalArgumentException iae)
+            {
+                System.out.println(Colours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + Colours.RESET);
+            }
+        }
+        System.out.println("Thanks for using the app");
+    }
+
+    private void doAdminMenuLoop(StudentManager studentManager, CourseManager courseManager)
+    {
+        boolean loop = true;
+        int option = -1;
+        while(loop)
+        {
+            printAdminMenu();
+            try
+            {
+                String input = keyboard.nextLine();
+                if(input.isEmpty() || input.length() > 1)
+                    throw new IllegalArgumentException();
+                else
+                    option = Integer.parseInt(input);
+
+                if(option < 0 || option >= AdminMenu.values().length)
+                    throw new IllegalArgumentException();
+
+                AdminMenu menuOption = AdminMenu.values()[option];
+                switch (menuOption)
+                {
+                    case ADD_A_COURSE:
+                        courseManager.requestAddCourse();
+                        break;
+                    case REMOVE_A_COURSE:
+                        courseManager.requestRemoveCourse();
+                        break;
+                    case DISPLAY_ALL_COURSES:
+
+                        break;
+                    case DISPLAY_A_COURSE:
+
+                        break;
+                    case ADD_STUDENT:
+
+                        break;
+                    case REMOVE_A_STUDENT:
+
+                        break;
+                    case DISPLAY_A_STUDENT:
+
+                        break;
+                    case SAVE_AND_EXIT:
+                        loop = false;
+                        break; // exit the loop*/
                 }
             }
             catch(InputMismatchException ime)
@@ -194,6 +222,18 @@ public class App
         for(int i=0; i < LoggedInMenu.values().length; i++)
         {
             String menuOption = LoggedInMenu.values()[i].toString().replaceAll("_", " ");
+            System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
+        }
+        System.out.println("Enter the corresponding number to select an option");
+    }
+
+    //Adapted from my CA3 submission
+    private void printAdminMenu()
+    {
+        System.out.println("\nMenu Options:");
+        for(int i=0; i < AdminMenu.values().length; i++)
+        {
+            String menuOption = AdminMenu.values()[i].toString().replaceAll("_", " ");
             System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
         }
         System.out.println("Enter the corresponding number to select an option");

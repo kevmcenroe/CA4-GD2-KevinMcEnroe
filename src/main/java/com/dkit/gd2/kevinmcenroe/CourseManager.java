@@ -3,6 +3,7 @@ package com.dkit.gd2.kevinmcenroe;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * CoursesManager
@@ -86,7 +87,7 @@ public class CourseManager {
         return allCourses;
     }
 
-    public void addCourse(Course courseToAdd) {
+    private void addCourse(Course courseToAdd) {
         if(isAlreadyRegistered(courseToAdd)){
             System.out.println("A course of course ID " + courseToAdd.getCourseId() + " already exists in the courses map");
         }
@@ -95,6 +96,23 @@ public class CourseManager {
             this.coursesMap.put(courseClone.getCourseId(), courseClone);
             writeToFile();
         }
+    }
+
+    public void requestAddCourse(){
+        String courseID = getInput("Course ID");
+        String level = getInput("Level");
+        String title = getInput("Title");
+        String institution = getInput("Institution");
+
+        Course generatedCourse = new Course(courseID, level, title, institution);
+        addCourse(generatedCourse);
+    }
+
+    private void isValidCourseID(){
+        String regex = "^[A-Za-z]\\w{5,29}$";
+        Pattern pattern = Pattern.compile(regex);
+
+        //TO DO
     }
 
     public void removeCourse(String courseID) {
@@ -106,18 +124,56 @@ public class CourseManager {
             System.out.println("A course of course ID " + courseID + " does not exist in the courses map");
     }
 
+    public void requestRemoveCourse(){
+        System.out.println("Enter the ID of the course you wish to remove");
+        printAvailableCourses();
+        String courseID = getInput("Course ID");
+
+        if(coursesMap.containsKey(courseID)){
+            System.out.println(Colours.GREEN + "Removed "+ coursesMap.get(courseID) + Colours.RESET);
+            coursesMap.remove(courseID);
+        }
+        else
+            System.out.println(Colours.RED + "Unable to find course of ID " + courseID + Colours.RESET);
+    }
+
+    private void printAvailableCourses(){
+        String availableCourseCodes = displaySortedKeys(coursesMap);
+        System.out.println(Colours.BLUE + "Available Courses: " + availableCourseCodes + "\n" + Colours.RESET);
+    }
+
+    private String displaySortedKeys(HashMap mapToSort)
+    {
+        ArrayList<String> sortedKeys = new ArrayList<String>(mapToSort.keySet());
+        Collections.sort(sortedKeys);
+
+        String keyList = "[";
+        int index = 0;
+        for (String key : sortedKeys) {
+            if(index != sortedKeys.size()-1)
+                keyList += key + ", ";
+            else
+                keyList += key;
+            index++;
+        }
+        keyList += "]";
+
+        return keyList;
+    }
+
     // Adapted from my StudentManager
     public void writeToFile()
     {
         try(BufferedWriter coursesFile = new BufferedWriter(new FileWriter("courses.dat"))) {
 
+            /*First approach:
             Iterator courseIterator = this.coursesMap.entrySet().iterator();
 
             while (courseIterator.hasNext()) {
                 Map.Entry mapElement = (Map.Entry)courseIterator.next();
                 Course course = (Course)mapElement.getValue();
                 coursesFile.write(course.getCourseId() + "," + course.getLevel() + "," + course.getTitle() + "," + course.getInstitution() +"\n");
-            }
+            }*/
         }
         catch(IOException ioe)
         {
@@ -125,30 +181,16 @@ public class CourseManager {
         }
     }
 
-/*
-    // Store all the Course details.
-    // Requires fast access given courseId.
+    public static Scanner keyboard = new Scanner(System.in);
 
-    public CourseManager() {
-        // Hardcode some values to get started
-        // load from text file "courses.dat" and populate coursesMap
+    //Adapted from my CA3 submission
+    private String getInput(String requested) {
+        String input;
+        System.out.print("Please enter " + requested + " :>");
+
+        input = keyboard.nextLine();
+        return input;
     }
-
-//    public  getCourse( ) {
-//    }
-//
-//
-//    public  getAllCourses() {
-//    }
-//
-//    public addCourse() {
-//    }
-//
-//    public removeCourse() {
-//    }
-
-    // editCourse(courseId);       // not required for this iteration
-*/
 }
 
 
