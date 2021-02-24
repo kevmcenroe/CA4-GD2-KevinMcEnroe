@@ -82,7 +82,6 @@ public class CourseManager {
             Map.Entry mapElement = (Map.Entry)courseIterator.next();
             Course course = (Course)mapElement.getValue();
             allCourses.add(course);
-            System.out.println(Colours.GREEN + "Added course " + course + " to the list of all courses" +Colours.RESET);
         }
         return allCourses;
     }

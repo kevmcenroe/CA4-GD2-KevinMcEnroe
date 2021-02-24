@@ -10,26 +10,25 @@ package com.dkit.gd2.kevinmcenroe;
 //
 // Clone all received and returned objects - encapsulation
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class CourseChoicesManager extends StudentManager{
 
     // reference to constructor injected studentManager
-    private com.dkit.gd2.kevinmcenroe.StudentManager studentManager;
+    final private com.dkit.gd2.kevinmcenroe.StudentManager studentManager;
 
     // reference to constructor injected courseManager
-    private CourseManager courseManager;
+    final private CourseManager courseManager;
 
     // Store all the Course details -  fast access
     // Stores all of the available courses by code
-    private HashMap<String, Course> courseDetails = new HashMap<String, Course>();
+    final private HashMap<String, Course> courseDetails = new HashMap<>();
 
     // caoNumber, course selection list - for fast access
     //private HashMap<String, String> courseCodes = new HashMap<String, String>();
 
     // caoNumber, arraylist of course codes relating to choices
-    private HashMap<Integer, ArrayList<Course>> studentCourseChoices = new HashMap<Integer, ArrayList<Course>>();
+    final private HashMap<Integer, ArrayList<Course>> studentCourseChoices = new HashMap<>();
 
     // CourseChoicesManager DEPENDS on both the StudentManager and CourseManager to access
     // student details and course details.  So, we receive a reference to each via
@@ -40,14 +39,11 @@ public class CourseChoicesManager extends StudentManager{
         this.studentManager = studentManager;
         this.courseManager = courseManager;
 
+        System.out.println("Adding courses to the course details map...");
         for(Course course : courseManager.getAllCourses()){
             courseDetails.put(course.getCourseId(), course);
             System.out.println(Colours.GREEN + "Added " + course.getCourseId() + " to the course details map" + Colours.RESET);
         }
-    }
-
-    public void prepareCourseChoices(Student student){
-
     }
 
     public Student getStudentDetails(int caoNumber) {
@@ -61,13 +57,25 @@ public class CourseChoicesManager extends StudentManager{
     }
 
     public Course getCourseDetails(String courseID) {
-        Course matchingCourse = null;
+
+        /* This code was refactored to displayCourseDetails()
         if(courseManager.coursesMap.containsKey(courseID))
             matchingCourse = courseManager.coursesMap.get(courseID);
         else{
             System.out.println("A course of ID " + courseID + " does not exist in the course map");
-        }
+        }*/
+
+        Course matchingCourse = courseManager.coursesMap.get(courseID);
         return matchingCourse;
+    }
+
+    public void displayCourseDetails(){
+        String courseID = getInput("Course ID");
+        if(courseManager.coursesMap.containsKey(courseID))
+            System.out.println(Colours.GREEN + getCourseDetails(courseID) + Colours.RESET);
+        else{
+            System.out.println(Colours.RED + "A course of ID '" + courseID + "' does not exist in the course map" + Colours.RESET);
+        }
     }
 
     public List<Course> getStudentChoices(int caoNumber){
@@ -97,7 +105,7 @@ public class CourseChoicesManager extends StudentManager{
                     System.out.println(Colours.GREEN + "Added " + course + Colours.RESET);
                 }
                 else{
-                    System.out.println("Course ID " + courseID + " does not exist in the course map");
+                    System.out.println("Course ID '" + courseID + "' does not exist in the course map");
                 }
             }
 
@@ -133,15 +141,15 @@ public class CourseChoicesManager extends StudentManager{
         try{
             if(getStudentChoices(caoNumber) == null) {
                 createStudentCourseChoices(caoNumber);
-
-                List<Course> choices = getStudentChoices(caoNumber);
-                if(choices.size() > 0)
-                    for (Course choice : choices) {
-                       System.out.println(choice);
-                    }
-                else
-                    System.out.println(Colours.RED + "You have not yet specified any course choices" + Colours.RESET);
             }
+
+            List<Course> choices = getStudentChoices(caoNumber);
+            if(choices.size() > 0)
+                for (Course choice : choices) {
+                   System.out.println(Colours.GREEN + choice + Colours.RESET);
+                }
+            else
+                System.out.println(Colours.RED + "You have not yet specified any course choices" + Colours.RESET);
         }
         catch(NullPointerException npe){
             System.out.println(Colours.RED + "NullPointerException" + Colours.RESET);
@@ -178,7 +186,8 @@ public class CourseChoicesManager extends StudentManager{
     }
 
     private void printAvailableCourses(){
-        System.out.println(Colours.BLUE + "Available Courses: " + courseDetails.keySet() + "\n" + Colours.RESET);
+        String availableCourseCodes = displaySortedKeys(courseDetails);
+        System.out.println(Colours.BLUE + "Available Courses: " + availableCourseCodes + "\n" + Colours.RESET);
     }
 
     boolean login(int caoNumber, String dateOfBirth, String password) {
@@ -230,4 +239,22 @@ public class CourseChoicesManager extends StudentManager{
         return input;
     }
 
+    private String displaySortedKeys(HashMap mapToSort)
+    {
+        ArrayList<String> sortedKeys = new ArrayList<String>(mapToSort.keySet());
+        Collections.sort(sortedKeys);
+
+        String keyList = "[";
+        int index = 0;
+        for (String key : sortedKeys) {
+            if(index != sortedKeys.size()-1)
+                keyList += key + ", ";
+            else
+                keyList += key;
+            index++;
+        }
+        keyList += "]";
+
+        return keyList;
+    }
 }

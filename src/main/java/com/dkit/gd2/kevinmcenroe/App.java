@@ -91,8 +91,6 @@ public class App
                         Student loggedIn = courseChoicesManager.requestLogin();
                         if(loggedIn != null)
                             doLoggedInMenuLoop(studentManager, courseChoicesManager, loggedIn);
-                        else
-                            System.out.println("IT WAS NULL");
                         break;
                     case ADMINISTRATOR:
 
@@ -130,7 +128,7 @@ public class App
                 {
                     option = Integer.parseInt(input);
                 }
-                if(option < 0 || option >= MainMenu.values().length)
+                if(option < 0 || option >= LoggedInMenu.values().length)
                 {
                     throw new IllegalArgumentException();
                 }
@@ -139,7 +137,7 @@ public class App
                 switch (menuOption)
                 {
                     case DISPLAY_A_COURSE:
-
+                        courseChoicesManager.displayCourseDetails();
                         break; // exit the loop
                     case DISPLAY_ALL_COURSES:
                         courseChoicesManager.displayAllCourses();
@@ -157,12 +155,12 @@ public class App
             }
             catch(InputMismatchException ime)
             {
-                System.out.println("Please enter a valid option");
+                System.out.println(Colours.RED + "Please enter a valid option (InputMismatchException - " + ime.getMessage() + ")" + Colours.RESET);
                 keyboard.nextLine();
             }
             catch(IllegalArgumentException iae)
             {
-                System.out.println(Colours.RED + "Please enter a valid option" + Colours.RESET);
+                System.out.println(Colours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + Colours.RESET);
             }
         }
         System.out.println("Thanks for using the app");
