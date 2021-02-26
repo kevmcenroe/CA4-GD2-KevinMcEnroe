@@ -10,7 +10,7 @@ public class StudentManager {
 
     // Store all students in data structure
     // Fastest access to given CAO number = the key
-    HashMap<Integer, Student> studentsMap = new HashMap<Integer, Student>();
+    HashMap<Integer, Student> studentsMap = new HashMap<>();
 
     // Constructor
     public StudentManager() {
@@ -54,23 +54,22 @@ public class StudentManager {
 */
 
     public boolean isRegistered(int caoNumber){
-        if(this.studentsMap.containsKey(caoNumber)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return this.studentsMap.containsKey(caoNumber);
     }
 
     public Student getStudent(int caoNumber) {
         Student matchingStudent = this.studentsMap.get(caoNumber);
-        Student studentClone = new Student(matchingStudent);
-        return studentClone;
+        return new Student(matchingStudent);
+    }
+
+    public void displayStudent() {
+        int caoNumber = Integer.parseInt(getInput("CAO Number"));
+        Student studentToDisplay = studentsMap.get(caoNumber);
     }
 
     public void addStudent(Student studentToAdd) {
         if(isRegistered(studentToAdd.getCaoNumber()))
-            System.out.println("A student of CAO number " + studentToAdd.getCaoNumber() + " already exists in the students map");
+            System.out.println(IColours.RED + "A student of CAO number " + studentToAdd.getCaoNumber() + " already exists" + IColours.RESET);
         else{
             Student studentClone = new Student(studentToAdd);
             this.studentsMap.put(studentClone.getCaoNumber(), studentClone);
@@ -92,12 +91,13 @@ public class StudentManager {
 
     public void removeStudent(int caoNumber) {
         if (this.studentsMap.containsKey(caoNumber)){
+            Student studentToRemove = studentsMap.get(caoNumber);
+            System.out.println(IColours.GREEN + "Removed " + studentToRemove + IColours.RESET);
             this.studentsMap.remove(caoNumber);
             writeToFile();
         }
         else
-            System.out.println("A student of CAO number " + caoNumber + " does not exist in the student map");
-
+            System.out.println(IColours.RED + "A student of CAO number " + caoNumber + " does not exist" + IColours.RESET);
     }
 
     public void displayRemoveStudent() {
@@ -110,13 +110,9 @@ public class StudentManager {
     public void writeToFile()
     {
         try(BufferedWriter studentsFile = new BufferedWriter(new FileWriter("students.dat"))) {
-
-            Iterator studentIterator = this.studentsMap.entrySet().iterator();
-
-            while (studentIterator.hasNext()) {
-                Map.Entry mapElement = (Map.Entry)studentIterator.next();
-                Student student = (Student)mapElement.getValue();
-                studentsFile.write(student.getCaoNumber() + "," + student.getDayOfBirth() + "," + student.getPassword() + "," + student.getEmail() +"\n");
+            for(Map.Entry<Integer, Student> entry : studentsMap.entrySet())
+            {
+                studentsFile.write(entry.getValue().getCaoNumber() + "," + entry.getValue().getDayOfBirth() + "," + entry.getValue().getPassword() + "," + entry.getValue().getEmail() + "\n");
             }
         }
         catch(IOException ioe)
@@ -125,7 +121,7 @@ public class StudentManager {
         }
     }
 
-    private static Scanner keyboard = new Scanner(System.in);
+    private static final Scanner keyboard = new Scanner(System.in);
 
     //Adapted from my CA3 submission
     private String getInput(String requested) {

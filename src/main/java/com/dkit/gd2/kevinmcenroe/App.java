@@ -173,7 +173,7 @@ public class App
                         studentManager.displayRemoveStudent();
                         break;
                     case DISPLAY_A_STUDENT:
-
+                        studentManager.displayStudent();
                         break;
                     case SAVE_AND_EXIT:
                         loop = false;
