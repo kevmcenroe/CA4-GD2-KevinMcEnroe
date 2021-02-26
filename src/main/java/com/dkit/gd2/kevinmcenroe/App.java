@@ -38,14 +38,14 @@ public class App
     private void doMainMenuLoop(StudentManager studentManager, CourseChoicesManager courseChoicesManager, CourseManager courseManager)
     {
         boolean loop = true;
-        int option = -1;
+        int option;
         while(loop)
         {
             printMainMenu();
             try
             {
                 String input = keyboard.nextLine();
-                if(input.isEmpty() || input.length() > 1)
+                if(input.length() != 1)
                     throw new IllegalArgumentException();
                 else
                     option = Integer.parseInt(input);
@@ -62,7 +62,7 @@ public class App
                     case STUDENT:
                         Student loggedIn = courseChoicesManager.displayLogin();
                         if(loggedIn != null)
-                            doLoggedInMenuLoop(studentManager, courseChoicesManager, loggedIn);
+                            doLoggedInMenuLoop(courseChoicesManager, loggedIn);
                         break;
                     case ADMINISTRATOR:
                         doAdminMenuLoop(studentManager, courseChoicesManager, courseManager);
@@ -82,25 +82,26 @@ public class App
         System.out.println("Thanks for using the app");
     }
 
-    private void doLoggedInMenuLoop(StudentManager studentManager, CourseChoicesManager courseChoicesManager, Student student)
+    private void doLoggedInMenuLoop(CourseChoicesManager courseChoicesManager, Student student)
     {
         boolean loop = true;
-        int option = -1;
+        int option;
         while(loop)
         {
             printLoggedInMenu();
             try
             {
                 String input = keyboard.nextLine();
-                if(input.isEmpty() || input.length() > 1)
+                if(input.length() != 1)
                     throw new IllegalArgumentException();
                 else
                     option = Integer.parseInt(input);
 
-                if(option < 0 || option >= LoggedInMenu.values().length)
+                if(option < 0 || option >= StudentMenu.values().length)
                     throw new IllegalArgumentException();
 
-                LoggedInMenu menuOption = LoggedInMenu.values()[option];
+                courseChoicesManager.syncCourseData();
+                StudentMenu menuOption = StudentMenu.values()[option];
                 switch (menuOption)
                 {
                     case DISPLAY_A_COURSE:
@@ -136,14 +137,14 @@ public class App
     private void doAdminMenuLoop(StudentManager studentManager, CourseChoicesManager courseChoicesManager, CourseManager courseManager)
     {
         boolean loop = true;
-        int option = -1;
+        int option;
         while(loop)
         {
             printAdminMenu();
             try
             {
                 String input = keyboard.nextLine();
-                if(input.isEmpty() || input.length() > 1)
+                if(input.length() != 1)
                     throw new IllegalArgumentException();
                 else
                     option = Integer.parseInt(input);
@@ -195,15 +196,6 @@ public class App
     }
 
     //Adapted from my CA3 submission
-    private String requestInput(String requested) {
-        String input;
-        System.out.print("Please enter " + requested + " :>");
-
-        input = keyboard.nextLine();
-        return input;
-    }
-
-    //Adapted from my CA3 submission
     private void printMainMenu()
     {
         System.out.println("\nMenu Options:");
@@ -219,9 +211,9 @@ public class App
     private void printLoggedInMenu()
     {
         System.out.println("\nMenu Options:");
-        for(int i=0; i < LoggedInMenu.values().length; i++)
+        for(int i = 0; i < StudentMenu.values().length; i++)
         {
-            String menuOption = LoggedInMenu.values()[i].toString().replaceAll("_", " ");
+            String menuOption = StudentMenu.values()[i].toString().replaceAll("_", " ");
             System.out.println("\t" + IColours.BLUE + i + ". " + menuOption + IColours.RESET);
         }
         System.out.println("Enter the corresponding number to select an option");

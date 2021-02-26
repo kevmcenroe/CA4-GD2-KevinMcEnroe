@@ -39,8 +39,14 @@ public class CourseChoicesManager extends StudentManager{
         this.studentManager = studentManager;
         this.courseManager = courseManager;
 
+        syncCourseData();
+    }
+
+    public void syncCourseData(){
+        courseDetails.clear();
         for(Course course : courseManager.getAllCourses())
             courseDetails.put(course.getCourseId(), course);
+        System.out.println("Data synced");
     }
 
     public Student getStudentDetails(int caoNumber) {
@@ -62,8 +68,7 @@ public class CourseChoicesManager extends StudentManager{
             System.out.println("A course of ID " + courseID + " does not exist in the course map");
         }*/
 
-        Course matchingCourse = courseManager.coursesMap.get(courseID);
-        return matchingCourse;
+        return courseManager.coursesMap.get(courseID);
     }
 
     public void displayCourseDetails(){
@@ -161,7 +166,7 @@ public class CourseChoicesManager extends StudentManager{
     }
 
     private List<Course> getAllCourses() {
-        courseManager.loadCoursesFromFile(courseDetails, "courses.dat");
+        courseManager.loadCoursesFromFile(courseDetails);
 
         List<Course> allCourses = new ArrayList<>();
         Iterator courseIterator = this.courseDetails.entrySet().iterator();
@@ -175,6 +180,7 @@ public class CourseChoicesManager extends StudentManager{
         }
         else
             System.out.println(IColours.RED + "The administrator has not yet populated the course list" + IColours.RESET);
+
         return allCourses;
     }
 
@@ -199,7 +205,6 @@ public class CourseChoicesManager extends StudentManager{
             if(dateOfBirth.equals(student.getDayOfBirth())) {
 
                 if (password.equals(student.getPassword())){
-
                     System.out.println(IColours.GREEN + "Successful log in" + IColours.RESET);
                     return true;
                 }
@@ -244,17 +249,17 @@ public class CourseChoicesManager extends StudentManager{
         ArrayList<String> sortedKeys = new ArrayList<String>(mapToSort.keySet());
         Collections.sort(sortedKeys);
 
-        String keyList = "[";
+        StringBuilder keyList = new StringBuilder("[");
         int index = 0;
         for (String key : sortedKeys) {
             if(index != sortedKeys.size()-1)
-                keyList += key + ", ";
+                keyList.append(key).append(", ");
             else
-                keyList += key;
+                keyList.append(key);
             index++;
         }
-        keyList += "]";
+        keyList.append("]");
 
-        return keyList;
+        return keyList.toString();
     }
 }

@@ -17,17 +17,17 @@ import java.util.regex.Pattern;
 
 public class CourseManager {
 
-    HashMap<String, Course> coursesMap = new HashMap<String, Course>();
+    HashMap<String, Course> coursesMap = new HashMap<>();
 
     // Constructor
     public CourseManager() {
-        loadCoursesFromFile(this.coursesMap, "courses.dat");
+        loadCoursesFromFile(this.coursesMap);
     }
 
     // Adapted from my StudentManager
-    protected void loadCoursesFromFile(Map<String, Course> courseMap, String readFile){
+    protected void loadCoursesFromFile(Map<String, Course> courseMap){
 
-        try(Scanner coursesFile = new Scanner(new BufferedReader(new FileReader(readFile))))
+        try(Scanner coursesFile = new Scanner(new BufferedReader(new FileReader("courses.dat"))))
         {
             String input;
             //System.out.println("Reading courses from file...");
@@ -56,19 +56,13 @@ public class CourseManager {
     }
 
     private boolean isRegistered(Course courseToCheck){
-        if(this.coursesMap.containsKey(courseToCheck.getCourseId())) {
-            System.out.println("A course of course ID " + courseToCheck.getCourseId() + " already exists in the courses map");
-            return true;
-        }
-        else
-            return false;
+        return this.coursesMap.containsKey(courseToCheck.getCourseId());
     }
 
     private Course getCourse(String courseID) {
         Course matchingCourse = this.coursesMap.get(courseID);
-        Course courseClone = new Course(matchingCourse);
 
-        return courseClone;
+        return new Course(matchingCourse);
     }
 
     public void displayCourse(){
@@ -81,13 +75,12 @@ public class CourseManager {
 
     public List<Course> getAllCourses(){
         List<Course> allCourses = new ArrayList<>();
-        Iterator courseIterator = this.coursesMap.entrySet().iterator();
 
-        while (courseIterator.hasNext()) {
-            Map.Entry mapElement = (Map.Entry)courseIterator.next();
-            Course course = (Course)mapElement.getValue();
+        for (Map.Entry<String, Course> stringCourseEntry : this.coursesMap.entrySet()) {
+            Course course = (Course) ((Map.Entry) stringCourseEntry).getValue();
             allCourses.add(course);
         }
+
         return allCourses;
     }
 
@@ -101,11 +94,12 @@ public class CourseManager {
 
     private void addCourse(Course courseToAdd) {
         if(isRegistered(courseToAdd)){
-            System.out.println("A course of course ID " + courseToAdd.getCourseId() + " already exists in the courses map");
+            System.out.println(IColours.RED + "A course of course ID " + courseToAdd.getCourseId() + " already exists in the courses map" + IColours.RESET);
         }
         else{
             Course courseClone = new Course(courseToAdd);
             this.coursesMap.put(courseClone.getCourseId(), courseClone);
+            System.out.println(IColours.GREEN + "Added " + courseClone + IColours.RESET);
             writeToFile(coursesMap);
         }
     }
@@ -155,18 +149,18 @@ public class CourseManager {
         ArrayList<String> sortedKeys = new ArrayList<String>(mapToSort.keySet());
         Collections.sort(sortedKeys);
 
-        String keyList = "[";
+        StringBuilder keyList = new StringBuilder("[");
         int index = 0;
         for (String key : sortedKeys) {
             if(index != sortedKeys.size()-1)
-                keyList += key + ", ";
+                keyList.append(key).append(", ");
             else
-                keyList += key;
+                keyList.append(key);
             index++;
         }
-        keyList += "]";
+        keyList.append("]");
 
-        return keyList;
+        return keyList.toString();
     }
 
     private void writeToFile(Map<String, Course> courseMap)
@@ -191,7 +185,7 @@ public class CourseManager {
         }
     }
 
-    private static Scanner keyboard = new Scanner(System.in);
+    private static final Scanner keyboard = new Scanner(System.in);
 
     //Adapted from my CA3 submission
     private String getInput(String requested) {

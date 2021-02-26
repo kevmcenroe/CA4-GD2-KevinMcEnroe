@@ -64,7 +64,13 @@ public class StudentManager {
 
     public void displayStudent() {
         int caoNumber = Integer.parseInt(getInput("CAO Number"));
-        Student studentToDisplay = studentsMap.get(caoNumber);
+        if(studentsMap.containsKey(caoNumber))
+        {
+            Student studentToDisplay = getStudent(caoNumber);
+            System.out.println(IColours.GREEN + studentToDisplay + IColours.RESET);
+        }
+        else
+            System.out.println(IColours.RED + "A student of CAO number " + caoNumber + " does not exist" + IColours.RESET);
     }
 
     public void addStudent(Student studentToAdd) {
@@ -131,6 +137,4 @@ public class StudentManager {
         input = keyboard.nextLine();
         return input;
     }
-
-
 }
