@@ -1,0 +1,8 @@
+DK001,8,Accounting and Finance,DKIT
+DK002,8,Business Studies,DKIT
+DK003,8,Computing in Games Development,DKIT
+DK004,8,Computing in Software Development,DKIT
+DK005,8,Augmented and Virtual Reality,DKIT
+DK006,8,Mathematics and Data Science,DKIT
+DK007,8,Computing Systems and Operations,DKIT
+DK008,8,Building Surveying,DKIT

@@ -30,7 +30,7 @@ public class CourseManager {
         try(Scanner coursesFile = new Scanner(new BufferedReader(new FileReader(readFile))))
         {
             String input;
-            System.out.println("Reading courses from file...");
+            //System.out.println("Reading courses from file...");
             while(coursesFile.hasNextLine())
             {
                 input = coursesFile.nextLine();
@@ -42,7 +42,7 @@ public class CourseManager {
 
                 Course readCourse = new Course(courseID, level, title, institution);
                 courseMap.put(readCourse.getCourseId(), readCourse);
-                System.out.println(Colours.GREEN + "Course added to the courses map. Course ID number: " + readCourse.getCourseId() + Colours.RESET);
+                //System.out.println(IColours.GREEN + "Course added to the courses map. Course ID number: " + readCourse.getCourseId() + IColours.RESET);
             }
         }
         catch(FileNotFoundException fne)
@@ -55,24 +55,28 @@ public class CourseManager {
         }
     }
 
-    private boolean isAlreadyRegistered(Course courseToCheck){
+    private boolean isRegistered(Course courseToCheck){
         if(this.coursesMap.containsKey(courseToCheck.getCourseId())) {
             System.out.println("A course of course ID " + courseToCheck.getCourseId() + " already exists in the courses map");
             return true;
         }
-        else{
+        else
             return false;
-        }
-
     }
 
-    public Course getCourse(String courseID) {
+    private Course getCourse(String courseID) {
         Course matchingCourse = this.coursesMap.get(courseID);
         Course courseClone = new Course(matchingCourse);
 
-        System.out.println("Matching student found at address " + matchingCourse);
-        System.out.println("Clone student saved to address " + courseClone);
-        return matchingCourse;
+        return courseClone;
+    }
+
+    public void displayCourse(){
+        String inputCourseID = getInput("Course ID");
+        if(coursesMap.containsKey(inputCourseID))
+            System.out.println(IColours.GREEN + getCourse(inputCourseID) + IColours.RESET);
+        else
+            System.out.println(IColours.RED + "A course of ID " + inputCourseID + " does not exist in the course map" + IColours.RESET);
     }
 
     public List<Course> getAllCourses(){
@@ -87,18 +91,26 @@ public class CourseManager {
         return allCourses;
     }
 
+    // This code is similar to displayAllCourses in CourseChoicesManager but included by necessity of the brief
+    public void displayAllCourses(){
+        List<Course> allCourses = getAllCourses();
+        for(Course course : allCourses){
+            System.out.println(IColours.GREEN + course + IColours.RESET);
+        }
+    }
+
     private void addCourse(Course courseToAdd) {
-        if(isAlreadyRegistered(courseToAdd)){
+        if(isRegistered(courseToAdd)){
             System.out.println("A course of course ID " + courseToAdd.getCourseId() + " already exists in the courses map");
         }
         else{
             Course courseClone = new Course(courseToAdd);
             this.coursesMap.put(courseClone.getCourseId(), courseClone);
-            writeToFile();
+            writeToFile(coursesMap);
         }
     }
 
-    public void requestAddCourse(){
+    public void displayAddCourse(){
         String courseID = getInput("Course ID");
         String level = getInput("Level");
         String title = getInput("Title");
@@ -115,34 +127,30 @@ public class CourseManager {
         //TO DO
     }
 
-    public void removeCourse(String courseID) {
-        if (this.coursesMap.containsKey(courseID)){
-            this.coursesMap.remove(courseID);
-            writeToFile();
-        }
-        else
-            System.out.println("A course of course ID " + courseID + " does not exist in the courses map");
+    private void removeCourse(String courseID) {
+        this.coursesMap.remove(courseID);
+        writeToFile(coursesMap);
     }
 
-    public void requestRemoveCourse(){
+    public void displayRemoveCourse(){
         System.out.println("Enter the ID of the course you wish to remove");
         printAvailableCourses();
         String courseID = getInput("Course ID");
 
         if(coursesMap.containsKey(courseID)){
-            System.out.println(Colours.GREEN + "Removed "+ coursesMap.get(courseID) + Colours.RESET);
-            coursesMap.remove(courseID);
+            System.out.println(IColours.GREEN + "Removed "+ coursesMap.get(courseID) + IColours.RESET);
+            removeCourse(courseID);
         }
         else
-            System.out.println(Colours.RED + "Unable to find course of ID " + courseID + Colours.RESET);
+            System.out.println(IColours.RED + "Unable to find course of ID " + courseID + IColours.RESET);
     }
 
     private void printAvailableCourses(){
-        String availableCourseCodes = displaySortedKeys(coursesMap);
-        System.out.println(Colours.BLUE + "Available Courses: " + availableCourseCodes + "\n" + Colours.RESET);
+        String availableCourseCodes = getSortedKeys(coursesMap);
+        System.out.println(IColours.BLUE + "Available Courses: " + availableCourseCodes + "\n" + IColours.RESET);
     }
 
-    private String displaySortedKeys(HashMap mapToSort)
+    private String getSortedKeys(HashMap mapToSort)
     {
         ArrayList<String> sortedKeys = new ArrayList<String>(mapToSort.keySet());
         Collections.sort(sortedKeys);
@@ -161,11 +169,13 @@ public class CourseManager {
         return keyList;
     }
 
-    // Adapted from my StudentManager
-    public void writeToFile()
+    private void writeToFile(Map<String, Course> courseMap)
     {
         try(BufferedWriter coursesFile = new BufferedWriter(new FileWriter("courses.dat"))) {
-
+            for(Map.Entry<String, Course> entry : courseMap.entrySet())
+            {
+                coursesFile.write(entry.getValue().getCourseId() + "," + entry.getValue().getLevel() + "," + entry.getValue().getTitle() + "," + entry.getValue().getInstitution() + "\n");
+            }
             /*First approach:
             Iterator courseIterator = this.coursesMap.entrySet().iterator();
 
@@ -177,11 +187,11 @@ public class CourseManager {
         }
         catch(IOException ioe)
         {
-            System.out.println(Colours.RED + "Could not write to file (IOException)" +Colours.RESET);
+            System.out.println(IColours.RED + "Could not write to file (IOException)" + IColours.RESET);
         }
     }
 
-    public static Scanner keyboard = new Scanner(System.in);
+    private static Scanner keyboard = new Scanner(System.in);
 
     //Adapted from my CA3 submission
     private String getInput(String requested) {

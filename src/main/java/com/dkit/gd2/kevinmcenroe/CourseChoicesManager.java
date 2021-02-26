@@ -39,20 +39,17 @@ public class CourseChoicesManager extends StudentManager{
         this.studentManager = studentManager;
         this.courseManager = courseManager;
 
-        System.out.println("Adding courses to the course details map...");
-        for(Course course : courseManager.getAllCourses()){
+        for(Course course : courseManager.getAllCourses())
             courseDetails.put(course.getCourseId(), course);
-            System.out.println(Colours.GREEN + "Added " + course.getCourseId() + " to the course details map" + Colours.RESET);
-        }
     }
 
     public Student getStudentDetails(int caoNumber) {
         Student matchingStudent = null;
         if(studentManager.studentsMap.containsKey(caoNumber))
             matchingStudent = studentManager.studentsMap.get(caoNumber);
-        else{
-            System.out.println(Colours.RED + "A student of CAO number " + caoNumber + " does not exist in the student map" + Colours.RESET);
-        }
+        else
+            System.out.println(IColours.RED + "A student of CAO number " + caoNumber + " does not exist in the student map" + IColours.RESET);
+
         return matchingStudent;
     }
 
@@ -74,10 +71,15 @@ public class CourseChoicesManager extends StudentManager{
         printAvailableCourses();
         String courseID = getInput("Course ID");
         if(courseManager.coursesMap.containsKey(courseID))
-            System.out.println(Colours.GREEN + getCourseDetails(courseID) + Colours.RESET);
-        else{
-            System.out.println(Colours.RED + "A course of ID '" + courseID + "' does not exist in the course map" + Colours.RESET);
-        }
+            System.out.println(IColours.GREEN + getCourseDetails(courseID) + IColours.RESET);
+        else
+            System.out.println(IColours.RED + "A course of ID '" + courseID + "' does not exist in the course map" + IColours.RESET);
+
+    }
+
+    private void createStudentChoices(int caoNumber){
+        ArrayList<Course> choices = new ArrayList<>(8);
+        this.studentCourseChoices.put(caoNumber, choices);
     }
 
     public List<Course> getStudentChoices(int caoNumber){
@@ -90,10 +92,29 @@ public class CourseChoicesManager extends StudentManager{
         return studentChoices;
     }
 
-    void updateChoices(int caoNumber, ArrayList<String> newCourseIDs) {
+    public void displayStudentChoices(int caoNumber){
+        try{
+            if(getStudentChoices(caoNumber) == null) {
+                createStudentChoices(caoNumber);
+            }
+
+            List<Course> choices = getStudentChoices(caoNumber);
+            if(choices.size() > 0)
+                for (Course choice : choices) {
+                    System.out.println(IColours.GREEN + choice + IColours.RESET);
+                }
+            else
+                System.out.println(IColours.RED + "You have not yet specified any course choices" + IColours.RESET);
+        }
+        catch(NullPointerException npe){
+            System.out.println(IColours.RED + "NullPointerException" + IColours.RESET);
+        }
+    }
+
+    void updateStudentChoices(int caoNumber, ArrayList<String> newCourseIDs) {
 
         if(getStudentChoices(caoNumber) == null) {
-            createStudentCourseChoices(caoNumber);
+            createStudentChoices(caoNumber);
         }
 
         if(studentManager.studentsMap.containsKey(caoNumber)) {
@@ -103,7 +124,7 @@ public class CourseChoicesManager extends StudentManager{
                 if(courseDetails.containsKey(courseID)){
                     Course course = courseDetails.get(courseID);
                     chosenCourses.add(course);
-                    System.out.println(Colours.GREEN + "Added " + course + Colours.RESET);
+                    System.out.println(IColours.GREEN + "Added " + course + IColours.RESET);
                 }
                 else{
                     System.out.println("Course ID '" + courseID + "' does not exist in the course map");
@@ -115,7 +136,33 @@ public class CourseChoicesManager extends StudentManager{
         }
     }
 
+    public void displayUpdateChoices(int caoNumber){
+        ArrayList<String> newChoicesByCourseID = new ArrayList<>();
+        System.out.println("Please enter your 8 chosen courses in order of preference by course code");
+        printAvailableCourses();
+
+        for (int i=1; i<9; i++){
+            String courseCode = getInput("course of preference " + i);
+            if(courseDetails.containsKey(courseCode)){
+                if(newChoicesByCourseID.contains(courseCode)){
+                    System.out.println(IColours.RED + "You have already added this course to your choices. Please try a different course code" + IColours.RESET);
+                    i--;
+                }
+                else
+                    newChoicesByCourseID.add(courseCode);
+            }
+            else{
+                System.out.println(IColours.RED + "A course of ID " + courseCode + " does not exist. Please enter a valid ID" + IColours.RESET);
+                i--;
+            }
+        }
+
+        updateStudentChoices(caoNumber, newChoicesByCourseID);
+    }
+
     private List<Course> getAllCourses() {
+        courseManager.loadCoursesFromFile(courseDetails, "courses.dat");
+
         List<Course> allCourses = new ArrayList<>();
         Iterator courseIterator = this.courseDetails.entrySet().iterator();
 
@@ -127,68 +174,20 @@ public class CourseChoicesManager extends StudentManager{
             //System.out.println(Colours.GREEN + "Added course " + course + " to the list of all courses" +Colours.RESET);
         }
         else
-            System.out.println(Colours.RED + "The administrator has not yet populated the course list" + Colours.RESET);
+            System.out.println(IColours.RED + "The administrator has not yet populated the course list" + IColours.RESET);
         return allCourses;
     }
 
     public void displayAllCourses(){
         List<Course> allCourses = getAllCourses();
         for(Course course : allCourses){
-            System.out.println(Colours.GREEN + course + Colours.RESET);
+            System.out.println(IColours.GREEN + course + IColours.RESET);
         }
-    }
-
-    public void printStudentChoices(int caoNumber){
-        try{
-            if(getStudentChoices(caoNumber) == null) {
-                createStudentCourseChoices(caoNumber);
-            }
-
-            List<Course> choices = getStudentChoices(caoNumber);
-            if(choices.size() > 0)
-                for (Course choice : choices) {
-                   System.out.println(Colours.GREEN + choice + Colours.RESET);
-                }
-            else
-                System.out.println(Colours.RED + "You have not yet specified any course choices" + Colours.RESET);
-        }
-        catch(NullPointerException npe){
-            System.out.println(Colours.RED + "NullPointerException" + Colours.RESET);
-        }
-    }
-
-    public void requestUpdateChoices(int caoNumber){
-        ArrayList<String> newChoicesByCourseID = new ArrayList<>();
-        System.out.println("Please enter your 8 chosen courses in order of preference by course code");
-        printAvailableCourses();
-
-        for (int i=1; i<9; i++){
-            String courseCode = getInput("course of preference " + i);
-            if(courseDetails.containsKey(courseCode)){
-                if(newChoicesByCourseID.contains(courseCode)){
-                    System.out.println(Colours.RED + "You have already added this course to your choices. Please try a different course code" + Colours.RESET);
-                    i--;
-                }
-                else
-                    newChoicesByCourseID.add(courseCode);
-            }
-            else{
-                System.out.println(Colours.RED + "A course of ID " + courseCode + " does not exist. Please enter a valid ID" + Colours.RESET);
-                i--;
-            }
-        }
-
-        updateChoices(caoNumber, newChoicesByCourseID);
-    }
-
-    private void createStudentCourseChoices(int caoNumber){
-        ArrayList<Course> choices = new ArrayList<>(100);
-        this.studentCourseChoices.put(caoNumber, choices);
     }
 
     private void printAvailableCourses(){
         String availableCourseCodes = displaySortedKeys(courseDetails);
-        System.out.println(Colours.BLUE + "Available Courses: " + availableCourseCodes + "\n" + Colours.RESET);
+        System.out.println(IColours.BLUE + "Available Courses: " + availableCourseCodes + "\n" + IColours.RESET);
     }
 
     boolean login(int caoNumber, String dateOfBirth, String password) {
@@ -201,7 +200,7 @@ public class CourseChoicesManager extends StudentManager{
 
                 if (password.equals(student.getPassword())){
 
-                    System.out.println(Colours.GREEN + "Successful log in" + Colours.RESET);
+                    System.out.println(IColours.GREEN + "Successful log in" + IColours.RESET);
                     return true;
                 }
                 else
@@ -213,11 +212,11 @@ public class CourseChoicesManager extends StudentManager{
         else
             invalidDetails+="Incorrect CAO Number";
 
-        System.out.println(Colours.RED + invalidDetails + Colours.RESET);
+        System.out.println(IColours.RED + invalidDetails + IColours.RESET);
         return false;
     }
 
-    public Student requestLogin(){
+    public Student displayLogin(){
         System.out.println("\nSubmit your student details to log in");
         int caoNum = Integer.parseInt(getInput("your CAO Number"));
         String dateOfBirth = getInput("your Date of Birth");

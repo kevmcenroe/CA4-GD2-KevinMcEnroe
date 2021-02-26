@@ -23,7 +23,7 @@ public class StudentManager {
         try(Scanner studentsFile = new Scanner(new BufferedReader(new FileReader(readFile))))
         {
             String input;
-            System.out.println("Reading students from file...");
+            //System.out.println("Reading students from file...");
             while(studentsFile.hasNextLine())
             {
                 input = studentsFile.nextLine();
@@ -35,7 +35,6 @@ public class StudentManager {
 
                 Student readStudent = new Student(caoNumber, dateOfBirth, password, email);
                 studentMap.put(readStudent.getCaoNumber(), readStudent);
-                System.out.println(Colours.GREEN + "Student added to the student map. CAO number: " + readStudent.getCaoNumber() + Colours.RESET);
             }
         }
         catch(FileNotFoundException fne)
@@ -53,16 +52,6 @@ public class StudentManager {
         return new Student(studentToClone.getCaoNumber(), studentToClone.getDayOfBirth(), studentToClone.getPassword(), studentToClone.getEmail());
     }
 */
-    public boolean isRegistered(Student studentToCheck){
-        if(this.studentsMap.containsKey(studentToCheck.getCaoNumber())) {
-            System.out.println("A student of CAO number " + studentToCheck.getCaoNumber() + " already exists in the students map");
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    }
 
     public boolean isRegistered(int caoNumber){
         if(this.studentsMap.containsKey(caoNumber)){
@@ -76,21 +65,29 @@ public class StudentManager {
     public Student getStudent(int caoNumber) {
         Student matchingStudent = this.studentsMap.get(caoNumber);
         Student studentClone = new Student(matchingStudent);
-
-        //System.out.println("Matching CAO number located");
-        //System.out.println("Returning clone of student with CAO number " + caoNumber);
         return studentClone;
     }
 
     public void addStudent(Student studentToAdd) {
-        if(isRegistered(studentToAdd)){
+        if(isRegistered(studentToAdd.getCaoNumber()))
             System.out.println("A student of CAO number " + studentToAdd.getCaoNumber() + " already exists in the students map");
-        }
         else{
             Student studentClone = new Student(studentToAdd);
             this.studentsMap.put(studentClone.getCaoNumber(), studentClone);
+            System.out.println(IColours.GREEN + "Added " + studentClone + IColours.RESET);
             writeToFile();
         }
+    }
+
+    public void displayAddStudent() {
+        System.out.println("Creating a student...");
+        int caoNumber = Integer.parseInt(getInput("CAO Number"));
+        String dateOfBirth = getInput("Date of Birth");
+        String password = getInput("Password");
+        String email = getInput("Email");
+
+        Student generatedStudent = new Student(caoNumber, dateOfBirth, password, email);
+        addStudent(generatedStudent);
     }
 
     public void removeStudent(int caoNumber) {
@@ -101,6 +98,12 @@ public class StudentManager {
         else
             System.out.println("A student of CAO number " + caoNumber + " does not exist in the student map");
 
+    }
+
+    public void displayRemoveStudent() {
+        int removingCAONum = Integer.parseInt(getInput("CAO Number of the student to be removed"));
+
+        removeStudent(removingCAONum);
     }
 
     // Adapted from my CA3 submission
@@ -118,7 +121,20 @@ public class StudentManager {
         }
         catch(IOException ioe)
         {
-            System.out.println(Colours.RED + "Could not write to file (IOException)" +Colours.RESET);
+            System.out.println(IColours.RED + "Could not write to file (IOException)" + IColours.RESET);
         }
     }
+
+    private static Scanner keyboard = new Scanner(System.in);
+
+    //Adapted from my CA3 submission
+    private String getInput(String requested) {
+        String input;
+        System.out.print("Please enter " + requested + " :>");
+
+        input = keyboard.nextLine();
+        return input;
+    }
+
+
 }

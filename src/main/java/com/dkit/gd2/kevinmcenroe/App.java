@@ -1,7 +1,6 @@
 package com.dkit.gd2.kevinmcenroe;
 
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -61,12 +60,12 @@ public class App
                         loop = false;
                         break; // exit the loop
                     case STUDENT:
-                        Student loggedIn = courseChoicesManager.requestLogin();
+                        Student loggedIn = courseChoicesManager.displayLogin();
                         if(loggedIn != null)
                             doLoggedInMenuLoop(studentManager, courseChoicesManager, loggedIn);
                         break;
                     case ADMINISTRATOR:
-                        doAdminMenuLoop(studentManager, courseManager);
+                        doAdminMenuLoop(studentManager, courseChoicesManager, courseManager);
                         break;
                 }
             }
@@ -77,7 +76,7 @@ public class App
             }
             catch(IllegalArgumentException iae)
             {
-                System.out.println(Colours.RED + "Please enter a valid option" + Colours.RESET);
+                System.out.println(IColours.RED + "Please enter a valid option" + IColours.RESET);
             }
         }
         System.out.println("Thanks for using the app");
@@ -111,10 +110,10 @@ public class App
                         courseChoicesManager.displayAllCourses();
                         break;
                     case DISPLAY_CURRENT_CHOICES:
-                        courseChoicesManager.printStudentChoices(student.getCaoNumber());
+                        courseChoicesManager.displayStudentChoices(student.getCaoNumber());
                         break;
                     case UPDATE_CHOICES:
-                        courseChoicesManager.requestUpdateChoices(student.getCaoNumber());
+                        courseChoicesManager.displayUpdateChoices(student.getCaoNumber());
                         break;
                     case LOG_OUT:
                         loop = false;
@@ -123,18 +122,18 @@ public class App
             }
             catch(InputMismatchException ime)
             {
-                System.out.println(Colours.RED + "Please enter a valid option (InputMismatchException - " + ime.getMessage() + ")" + Colours.RESET);
+                System.out.println(IColours.RED + "Please enter a valid option (InputMismatchException - " + ime.getMessage() + ")" + IColours.RESET);
                 keyboard.nextLine();
             }
             catch(IllegalArgumentException iae)
             {
-                System.out.println(Colours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + Colours.RESET);
+                System.out.println(IColours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + IColours.RESET);
             }
         }
-        System.out.println("Thanks for using the app");
+        System.out.println("Thanks for using the student menu");
     }
 
-    private void doAdminMenuLoop(StudentManager studentManager, CourseManager courseManager)
+    private void doAdminMenuLoop(StudentManager studentManager, CourseChoicesManager courseChoicesManager, CourseManager courseManager)
     {
         boolean loop = true;
         int option = -1;
@@ -156,39 +155,40 @@ public class App
                 switch (menuOption)
                 {
                     case ADD_A_COURSE:
-                        courseManager.requestAddCourse();
+                        courseManager.displayAddCourse();
                         break;
                     case REMOVE_A_COURSE:
-                        courseManager.requestRemoveCourse();
+                        courseManager.displayRemoveCourse();
                         break;
                     case DISPLAY_ALL_COURSES:
-
+                        courseManager.displayAllCourses();
                         break;
                     case DISPLAY_A_COURSE:
-
+                        courseManager.displayCourse();
                         break;
                     case ADD_STUDENT:
-
+                        studentManager.displayAddStudent();
                         break;
                     case REMOVE_A_STUDENT:
-
+                        studentManager.displayRemoveStudent();
                         break;
                     case DISPLAY_A_STUDENT:
 
                         break;
                     case SAVE_AND_EXIT:
                         loop = false;
+                        doMainMenuLoop(studentManager, courseChoicesManager, courseManager);
                         break; // exit the loop*/
                 }
             }
             catch(InputMismatchException ime)
             {
-                System.out.println(Colours.RED + "Please enter a valid option (InputMismatchException - " + ime.getMessage() + ")" + Colours.RESET);
+                System.out.println(IColours.RED + "Please enter a valid option (InputMismatchException - " + ime.getMessage() + ")" + IColours.RESET);
                 keyboard.nextLine();
             }
             catch(IllegalArgumentException iae)
             {
-                System.out.println(Colours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + Colours.RESET);
+                System.out.println(IColours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + IColours.RESET);
             }
         }
         System.out.println("Thanks for using the app");
@@ -210,7 +210,7 @@ public class App
         for(int i=0; i < MainMenu.values().length; i++)
         {
             String menuOption = MainMenu.values()[i].toString().replaceAll("_", " ");
-            System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
+            System.out.println("\t" + IColours.BLUE + i + ". " + menuOption + IColours.RESET);
         }
         System.out.println("Enter the corresponding number to select an option");
     }
@@ -222,7 +222,7 @@ public class App
         for(int i=0; i < LoggedInMenu.values().length; i++)
         {
             String menuOption = LoggedInMenu.values()[i].toString().replaceAll("_", " ");
-            System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
+            System.out.println("\t" + IColours.BLUE + i + ". " + menuOption + IColours.RESET);
         }
         System.out.println("Enter the corresponding number to select an option");
     }
@@ -234,7 +234,7 @@ public class App
         for(int i=0; i < AdminMenu.values().length; i++)
         {
             String menuOption = AdminMenu.values()[i].toString().replaceAll("_", " ");
-            System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
+            System.out.println("\t" + IColours.BLUE + i + ". " + menuOption + IColours.RESET);
         }
         System.out.println("Enter the corresponding number to select an option");
     }
