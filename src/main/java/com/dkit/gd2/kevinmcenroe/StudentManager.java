@@ -1,7 +1,5 @@
+// Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe;
-// StudentManager encapsulates the storage and ability
-// to manipulate student objects
-
 
 import java.io.*;
 import java.util.*;
