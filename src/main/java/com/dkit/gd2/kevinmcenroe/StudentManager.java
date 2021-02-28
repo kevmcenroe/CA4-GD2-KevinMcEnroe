@@ -90,16 +90,11 @@ public class StudentManager {
         System.out.println("Creating a student...");
         int caoNumber = Integer.parseInt(getInput("CAO Number"));
         String dateOfBirth = getValidDateOfBirth();
-        String password = getInput("Password");
-        String email = getInput("Email");
+        String password = getValidPassword();
+        String email = getValidEmail();
 
         Student generatedStudent = new Student(caoNumber, dateOfBirth, password, email);
         addStudent(generatedStudent);
-    }
-
-    private boolean isValidDateOfBirth(String dateOfBirth){
-        String regex = "^\\d{4}-\\d{2}-\\d{2}$";
-        return dateOfBirth.matches(regex);
     }
 
     private String getValidDateOfBirth(){
@@ -122,6 +117,34 @@ public class StudentManager {
             System.out.println(IColours.RED + "Invalid Date of Birth" + IColours.RESET);
             getValidDateOfBirth();
         }*/
+    }
+
+    private String getValidPassword(){
+        String password = getInput("Password of 5 to 20 Characters");
+        String passwordPattern = "^[a-zA-Z0-9]{8,20}$";
+        Pattern pattern = Pattern.compile((passwordPattern));
+        Matcher matcher = pattern.matcher(password);
+
+        if(!matcher.matches()) {
+            System.out.println(IColours.RED + "Invalid Password" + IColours.RESET);
+            getValidPassword();
+        }
+
+        return password;
+    }
+
+    private String getValidEmail(){
+        String email = getInput("Email");
+        String emailPattern = "^(.+)@(.+)?\\.[a-zA-Z]{2,15}$"; //Guarantees the @ symbol and .com etc
+        Pattern pattern = Pattern.compile((emailPattern));
+        Matcher matcher = pattern.matcher(email);
+
+        if(!matcher.matches()) {
+            System.out.println(IColours.RED + "Invalid Email" + IColours.RESET);
+            getValidEmail();
+        }
+
+        return email;
     }
 
     public void removeStudent(int caoNumber) {
