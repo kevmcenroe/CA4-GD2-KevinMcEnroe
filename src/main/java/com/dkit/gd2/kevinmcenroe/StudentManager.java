@@ -88,27 +88,45 @@ public class StudentManager {
 
     public void displayAddStudent() {
         System.out.println("Creating a student...");
-        int caoNumber = Integer.parseInt(getInput("CAO Number"));
+        int caoNumber = getValidCAONumber();
         String dateOfBirth = getValidDateOfBirth();
         String password = getValidPassword();
         String email = getValidEmail();
-
         Student generatedStudent = new Student(caoNumber, dateOfBirth, password, email);
         addStudent(generatedStudent);
     }
 
+    String loggedCAONum = "0";
+    private int getValidCAONumber(){
+        loggedCAONum = getInput("CAO number (digits only)");
+        String caoNumberPattern = "^[0-9]*$";
+        Pattern pattern = Pattern.compile((caoNumberPattern));
+        Matcher matcher = pattern.matcher(loggedCAONum);
+
+        if(!matcher.matches()) {
+            System.out.println(IColours.RED + "Invalid CAO Number" + IColours.RESET);
+            getValidCAONumber();
+        }
+        //else if(isRegistered(Integer.parseInt(caoNumber))){
+            //System.out.println(IColours.RED + "A student of CAO Number " + caoNumber + " already exists" + IColours.RESET);
+            //getValidCAONumber();
+        //}
+        return Integer.parseInt(loggedCAONum);
+    }
+
+    String loggedDateOfBirth = "2000-01-01";
     private String getValidDateOfBirth(){
-        String dateOfBirth = getInput("Date of Birth in YYYY-MM-DD format");
+        loggedDateOfBirth = getInput("Date of Birth in YYYY-MM-DD format");
         String datePattern = "^\\d{4}-\\d{2}-\\d{2}$";
         Pattern pattern = Pattern.compile((datePattern));
-        Matcher matcher = pattern.matcher(dateOfBirth);
+        Matcher matcher = pattern.matcher(loggedDateOfBirth);
 
         if(!matcher.matches()) {
             System.out.println(IColours.RED + "Invalid Date of Birth" + IColours.RESET);
             getValidDateOfBirth();
         }
 
-        return dateOfBirth;
+        return loggedDateOfBirth;
 
         /*  Previous String.matches attempt:
         String regex = "\"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"";
@@ -119,32 +137,34 @@ public class StudentManager {
         }*/
     }
 
+    String loggedPassword = "defaultpassword";
     private String getValidPassword(){
-        String password = getInput("Password of 5 to 20 Characters");
+        loggedPassword = getInput("Password of 5 to 20 Characters");
         String passwordPattern = "^[a-zA-Z0-9]{8,20}$";
         Pattern pattern = Pattern.compile((passwordPattern));
-        Matcher matcher = pattern.matcher(password);
+        Matcher matcher = pattern.matcher(loggedPassword);
 
         if(!matcher.matches()) {
             System.out.println(IColours.RED + "Invalid Password" + IColours.RESET);
             getValidPassword();
         }
 
-        return password;
+        return loggedPassword;
     }
 
+    String loggedEmail = "default@example.com";
     private String getValidEmail(){
-        String email = getInput("Email");
+        loggedEmail = getInput("Email");
         String emailPattern = "^(.+)@(.+)?\\.[a-zA-Z]{2,15}$"; //Guarantees the @ symbol and .com etc
         Pattern pattern = Pattern.compile((emailPattern));
-        Matcher matcher = pattern.matcher(email);
+        Matcher matcher = pattern.matcher(loggedEmail);
 
         if(!matcher.matches()) {
             System.out.println(IColours.RED + "Invalid Email" + IColours.RESET);
             getValidEmail();
         }
 
-        return email;
+        return loggedEmail;
     }
 
     public void removeStudent(int caoNumber) {
