@@ -23,22 +23,21 @@ public class CourseManagerTest {
     }
 
     @Test
-    public void displayCourse() {
-    }
+    public void writeToFile() {
+        HashMap<String, Course> expectedMap = new HashMap<>();
+        Course expectedCourseA = new Course("DK567","8","Architecture","DKIT");
+        Course expectedCourseB = new Course("DK908","7","Construction","DKIT");
+        Course expectedCourseC = new Course("DK727","6","Hospitality Management","DKIT");
+        expectedMap.put(expectedCourseA.getCourseId(), expectedCourseA);
+        expectedMap.put(expectedCourseB.getCourseId(), expectedCourseB);
+        expectedMap.put(expectedCourseC.getCourseId(), expectedCourseC);
 
-    @Test
-    public void getAllCourses() {
-    }
+        CourseManager courseManager = new CourseManager();
+        courseManager.writeToFile(expectedMap, "testcourses.txt");
 
-    @Test
-    public void displayAllCourses() {
-    }
+        HashMap<String, Course> actualMap = new HashMap<>();
+        courseManager.loadCoursesFromFile(actualMap, "testcourses.txt");
 
-    @Test
-    public void displayAddCourse() {
-    }
-
-    @Test
-    public void displayRemoveCourse() {
+        assertEquals(expectedMap, actualMap);
     }
 }

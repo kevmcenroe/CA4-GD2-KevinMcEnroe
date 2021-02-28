@@ -100,7 +100,7 @@ public class CourseManager {
             Course courseClone = new Course(courseToAdd);
             this.coursesMap.put(courseClone.getCourseId(), courseClone);
             System.out.println(IColours.GREEN + "Added " + courseClone + IColours.RESET);
-            writeToFile(coursesMap);
+            writeToFile(coursesMap, "courses.dat");
         }
     }
 
@@ -123,7 +123,7 @@ public class CourseManager {
 
     private void removeCourse(String courseID) {
         this.coursesMap.remove(courseID);
-        writeToFile(coursesMap);
+        writeToFile(coursesMap, "courses.dat");
     }
 
     public void displayRemoveCourse(){
@@ -163,9 +163,9 @@ public class CourseManager {
         return keyList.toString();
     }
 
-    private void writeToFile(Map<String, Course> courseMap)
+    protected void writeToFile(Map<String, Course> courseMap, String writeFile)
     {
-        try(BufferedWriter coursesFile = new BufferedWriter(new FileWriter("courses.dat"))) {
+        try(BufferedWriter coursesFile = new BufferedWriter(new FileWriter(writeFile))) {
             for(Map.Entry<String, Course> entry : courseMap.entrySet())
             {
                 coursesFile.write(entry.getValue().getCourseId() + "," + entry.getValue().getLevel() + "," + entry.getValue().getTitle() + "," + entry.getValue().getInstitution() + "\n");

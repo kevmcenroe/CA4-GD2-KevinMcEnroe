@@ -1,2 +1,3 @@
-DK700,8,Testing and Research,DKIT
-DK999,7,Quality Assurance,DKIT
+DK727,6,Hospitality Management,DKIT
+DK908,7,Construction,DKIT
+DK567,8,Architecture,DKIT

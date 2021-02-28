@@ -113,7 +113,7 @@ public class StudentManager {
     }
 
     // Adapted from my CA3 submission
-    public void writeToFile(HashMap<Integer, Student> mapOfStudents, String writeFile)
+    protected void writeToFile(HashMap<Integer, Student> mapOfStudents, String writeFile)
     {
         try(BufferedWriter studentsFile = new BufferedWriter(new FileWriter(writeFile))) {
             for(Map.Entry<Integer, Student> entry : mapOfStudents.entrySet())
