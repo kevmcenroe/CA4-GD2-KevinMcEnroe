@@ -21,13 +21,13 @@ public class CourseManager {
 
     // Constructor
     public CourseManager() {
-        loadCoursesFromFile(this.coursesMap);
+        loadCoursesFromFile(this.coursesMap, "courses.dat");
     }
 
     // Adapted from my StudentManager
-    protected void loadCoursesFromFile(Map<String, Course> courseMap){
+    protected void loadCoursesFromFile(Map<String, Course> courseMap, String fileToLoad){
 
-        try(Scanner coursesFile = new Scanner(new BufferedReader(new FileReader("courses.dat"))))
+        try(Scanner coursesFile = new Scanner(new BufferedReader(new FileReader(fileToLoad))))
         {
             String input;
             //System.out.println("Reading courses from file...");

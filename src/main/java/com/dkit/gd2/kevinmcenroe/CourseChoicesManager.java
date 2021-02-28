@@ -166,7 +166,7 @@ public class CourseChoicesManager extends StudentManager{
     }
 
     private List<Course> getAllCourses() {
-        courseManager.loadCoursesFromFile(courseDetails);
+        courseManager.loadCoursesFromFile(courseDetails, "courses.dat");
 
         List<Course> allCourses = new ArrayList<>();
         Iterator courseIterator = this.courseDetails.entrySet().iterator();

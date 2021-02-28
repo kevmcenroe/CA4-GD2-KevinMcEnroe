@@ -1,5 +1,7 @@
 package com.dkit.gd2.kevinmcenroe;
 
+import java.util.Objects;
+
 public class Course {
 
     private String courseId;   // e.g. DK821
@@ -56,5 +58,18 @@ public class Course {
                 ", title='" + title + '\'' +
                 ", institution='" + institution + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return courseId.equals(course.courseId) && level.equals(course.level) && title.equals(course.title) && institution.equals(course.institution);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(courseId, level, title, institution);
     }
 }
