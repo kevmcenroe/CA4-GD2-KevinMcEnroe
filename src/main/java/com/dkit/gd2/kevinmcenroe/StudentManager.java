@@ -1,8 +1,12 @@
 // Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe;
 
+//import jdk.swing.interop.SwingInterOpUtils;
+
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StudentManager {
 
@@ -85,12 +89,39 @@ public class StudentManager {
     public void displayAddStudent() {
         System.out.println("Creating a student...");
         int caoNumber = Integer.parseInt(getInput("CAO Number"));
-        String dateOfBirth = getInput("Date of Birth");
+        String dateOfBirth = getValidDateOfBirth();
         String password = getInput("Password");
         String email = getInput("Email");
 
         Student generatedStudent = new Student(caoNumber, dateOfBirth, password, email);
         addStudent(generatedStudent);
+    }
+
+    private boolean isValidDateOfBirth(String dateOfBirth){
+        String regex = "^\\d{4}-\\d{2}-\\d{2}$";
+        return dateOfBirth.matches(regex);
+    }
+
+    private String getValidDateOfBirth(){
+        String dateOfBirth = getInput("Date of Birth in YYYY-MM-DD format");
+        String datePattern = "^\\d{4}-\\d{2}-\\d{2}$";
+        Pattern pattern = Pattern.compile((datePattern));
+        Matcher matcher = pattern.matcher(dateOfBirth);
+
+        if(!matcher.matches()) {
+            System.out.println(IColours.RED + "Invalid Date of Birth" + IColours.RESET);
+            getValidDateOfBirth();
+        }
+
+        return dateOfBirth;
+
+        /*  Previous String.matches attempt:
+        String regex = "\"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"";
+        String dateOfBirth = getInput("Date of Birth in YYYY-MM-DD format");
+        if(dateOfBirth.matches(regex) == false) {
+            System.out.println(IColours.RED + "Invalid Date of Birth" + IColours.RESET);
+            getValidDateOfBirth();
+        }*/
     }
 
     public void removeStudent(int caoNumber) {

@@ -114,13 +114,6 @@ public class CourseManager {
         addCourse(generatedCourse);
     }
 
-    private void isValidCourseID(){
-        String regex = "^[A-Za-z]\\w{5,29}$";
-        Pattern pattern = Pattern.compile(regex);
-
-        //TO DO
-    }
-
     private void removeCourse(String courseID) {
         this.coursesMap.remove(courseID);
         writeToFile(coursesMap, "courses.dat");
