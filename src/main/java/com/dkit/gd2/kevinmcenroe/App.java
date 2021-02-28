@@ -4,12 +4,6 @@ package com.dkit.gd2.kevinmcenroe;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-/**
- *
- * Notes:
- *  Synchronisation of multiple reads and writes to file is not considered here.
- *
- */
 public class App 
 {
     public static Scanner keyboard = new Scanner(System.in);
@@ -18,8 +12,6 @@ public class App
     {
         System.out.println( "CAO Online - CA4" );
         new App().start();
-        // same as saying new application,
-        // just leaving out the left hand side
     }
 
     private void start() {
@@ -119,7 +111,7 @@ public class App
                         break;
                     case LOG_OUT:
                         loop = false;
-                        break; // exit the loop
+                        break; // Exit the loop
                 }
             }
             catch(InputMismatchException ime)
@@ -180,7 +172,7 @@ public class App
                     case SAVE_AND_EXIT:
                         loop = false;
                         doMainMenuLoop(studentManager, courseChoicesManager, courseManager);
-                        break; // exit the loop*/
+                        break; // Exit the loop
                 }
             }
             catch(InputMismatchException ime)

@@ -9,10 +9,6 @@ public class Student {
     private String password;    // min 8 characters
     private String email;
 
-    // Copy Constructor
-    // Copies the contents of a Student object argument into
-    // a new Student object, and returns that new object (a clone)
-    // (add here)
     public Student(Student student) {
         this.caoNumber = student.getCaoNumber();
         this.dateOfBirth = student.getDayOfBirth();

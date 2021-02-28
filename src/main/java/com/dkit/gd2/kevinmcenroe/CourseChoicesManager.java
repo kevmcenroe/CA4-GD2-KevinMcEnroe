@@ -1,41 +1,18 @@
 // Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe;
 
-// Stores all student CAO choices.
-// Allows student to make course choices, save them and update them later.
-//
-// emphasis on speed of access when multiple users are accessing this at same time
-//
-// This component would interact with a Network component that would, in turn, send
-// data over the internet to a web client.
-//
-// Clone all received and returned objects - encapsulation
-
 import java.util.*;
 
 public class CourseChoicesManager extends StudentManager{
 
-    // reference to constructor injected studentManager
     final private com.dkit.gd2.kevinmcenroe.StudentManager studentManager;
 
-    // reference to constructor injected courseManager
     final private CourseManager courseManager;
 
-    // Store all the Course details -  fast access
-    // Stores all of the available courses by code
     final private HashMap<String, Course> courseDetails = new HashMap<>();
 
-    // caoNumber, course selection list - for fast access
-    //private HashMap<String, String> courseCodes = new HashMap<String, String>();
-
-    // caoNumber, arraylist of course codes relating to choices
     final private HashMap<Integer, ArrayList<Course>> studentCourseChoices = new HashMap<>();
 
-    // CourseChoicesManager DEPENDS on both the StudentManager and CourseManager to access
-    // student details and course details.  So, we receive a reference to each via
-    // the constructor.
-    // This is called "Dependency Injection", meaning that we
-    // inject (or pass in) objects that this class requires to do its job.
     CourseChoicesManager(com.dkit.gd2.kevinmcenroe.StudentManager studentManager, CourseManager courseManager) {
         this.studentManager = studentManager;
         this.courseManager = courseManager;
@@ -51,7 +28,7 @@ public class CourseChoicesManager extends StudentManager{
     }
 
     //As per the CA4 Brief and Menu requirements, calling this method was not necessary in the menu as getStudent() in the StudentManager fulfills the same functionality.
-    //I decided to excercise the getStudent method instead to align the use of StudentManager methods in the admin menu
+    //I decided to exercise the getStudent method instead to align the use of StudentManager methods in the admin menu
     public Student getStudentDetails(int caoNumber) {
         Student matchingStudent = null;
         if(studentManager.studentsMap.containsKey(caoNumber))
@@ -179,7 +156,6 @@ public class CourseChoicesManager extends StudentManager{
             Map.Entry mapElement = (Map.Entry)courseIterator.next();
             Course course = (Course)mapElement.getValue();
             allCourses.add(course);
-            //System.out.println(Colours.GREEN + "Added course " + course + " to the list of all courses" +Colours.RESET);
         }
         else
             System.out.println(IColours.RED + "The administrator has not yet populated the course list" + IColours.RESET);

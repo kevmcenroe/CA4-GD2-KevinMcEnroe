@@ -48,8 +48,7 @@ public class StudentManager {
             System.out.println("Input data type does not match that required (NumberFormatException)");
         }
     }
-/*
-    Retired in favour of the Student copy constructor
+/*  Method retired in favour of the Student copy constructor:
     private Student cloneStudent(Student studentToClone){
         return new Student(studentToClone.getCaoNumber(), studentToClone.getDayOfBirth(), studentToClone.getPassword(), studentToClone.getEmail());
     }
@@ -140,7 +139,7 @@ public class StudentManager {
 
     String loggedPassword = "defaultpassword";
     private String getValidPassword(){
-        loggedPassword = getInput("Password (5 to 20 characters)");
+        loggedPassword = getInput("Password (8 to 20 characters)");
         String passwordPattern = "^[a-zA-Z0-9]{8,20}$";
         Pattern pattern = Pattern.compile((passwordPattern));
         Matcher matcher = pattern.matcher(loggedPassword);
