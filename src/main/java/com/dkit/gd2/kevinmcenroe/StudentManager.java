@@ -80,7 +80,7 @@ public class StudentManager {
             Student studentClone = new Student(studentToAdd);
             this.studentsMap.put(studentClone.getCaoNumber(), studentClone);
             System.out.println(IColours.GREEN + "Added " + studentClone + IColours.RESET);
-            writeToFile();
+            writeToFile(studentsMap, "students.dat");
         }
     }
 
@@ -100,7 +100,7 @@ public class StudentManager {
             Student studentToRemove = studentsMap.get(caoNumber);
             System.out.println(IColours.GREEN + "Removed " + studentToRemove + IColours.RESET);
             this.studentsMap.remove(caoNumber);
-            writeToFile();
+            writeToFile(studentsMap, "students.dat");
         }
         else
             System.out.println(IColours.RED + "A student of CAO number " + caoNumber + " does not exist" + IColours.RESET);
@@ -113,10 +113,10 @@ public class StudentManager {
     }
 
     // Adapted from my CA3 submission
-    public void writeToFile()
+    public void writeToFile(HashMap<Integer, Student> mapOfStudents, String writeFile)
     {
-        try(BufferedWriter studentsFile = new BufferedWriter(new FileWriter("students.dat"))) {
-            for(Map.Entry<Integer, Student> entry : studentsMap.entrySet())
+        try(BufferedWriter studentsFile = new BufferedWriter(new FileWriter(writeFile))) {
+            for(Map.Entry<Integer, Student> entry : mapOfStudents.entrySet())
             {
                 studentsFile.write(entry.getValue().getCaoNumber() + "," + entry.getValue().getDayOfBirth() + "," + entry.getValue().getPassword() + "," + entry.getValue().getEmail() + "\n");
             }

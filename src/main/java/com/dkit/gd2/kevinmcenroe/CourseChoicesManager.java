@@ -49,6 +49,8 @@ public class CourseChoicesManager extends StudentManager{
         System.out.println("Data synced");
     }
 
+    //As per the CA4 Brief and Menu requirements, calling this method was not necessary in the menu as getStudent() in the StudentManager fulfills the same functionality.
+    //I decided to excercise the getStudent method instead to align the use of StudentManager methods in the admin menu
     public Student getStudentDetails(int caoNumber) {
         Student matchingStudent = null;
         if(studentManager.studentsMap.containsKey(caoNumber))
@@ -61,7 +63,7 @@ public class CourseChoicesManager extends StudentManager{
 
     public Course getCourseDetails(String courseID) {
 
-        /* This code was refactored to displayCourseDetails()
+        /* These if statements were refactored to displayCourseDetails()
         if(courseManager.coursesMap.containsKey(courseID))
             matchingCourse = courseManager.coursesMap.get(courseID);
         else{
