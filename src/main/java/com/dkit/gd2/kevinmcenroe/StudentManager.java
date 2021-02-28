@@ -65,6 +65,7 @@ public class StudentManager {
     }
 
     public void displayStudent() {
+        printAvailableStudents();
         int caoNumber = Integer.parseInt(getInput("CAO Number"));
         if(studentsMap.containsKey(caoNumber))
         {
@@ -107,16 +108,16 @@ public class StudentManager {
             System.out.println(IColours.RED + "Invalid CAO Number" + IColours.RESET);
             getValidCAONumber();
         }
-        //else if(isRegistered(Integer.parseInt(caoNumber))){
-            //System.out.println(IColours.RED + "A student of CAO Number " + caoNumber + " already exists" + IColours.RESET);
-            //getValidCAONumber();
-        //}
+        else if(isRegistered(Integer.parseInt(loggedCAONum))){
+            System.out.println(IColours.RED + "A student of CAO Number " + loggedCAONum + " already exists" + IColours.RESET);
+            getValidCAONumber();
+        }
         return Integer.parseInt(loggedCAONum);
     }
 
     String loggedDateOfBirth = "2000-01-01";
     private String getValidDateOfBirth(){
-        loggedDateOfBirth = getInput("Date of Birth in YYYY-MM-DD format");
+        loggedDateOfBirth = getInput("Date of Birth (YYYY-MM-DD format)");
         String datePattern = "^\\d{4}-\\d{2}-\\d{2}$";
         Pattern pattern = Pattern.compile((datePattern));
         Matcher matcher = pattern.matcher(loggedDateOfBirth);
@@ -139,7 +140,7 @@ public class StudentManager {
 
     String loggedPassword = "defaultpassword";
     private String getValidPassword(){
-        loggedPassword = getInput("Password of 5 to 20 Characters");
+        loggedPassword = getInput("Password (5 to 20 characters)");
         String passwordPattern = "^[a-zA-Z0-9]{8,20}$";
         Pattern pattern = Pattern.compile((passwordPattern));
         Matcher matcher = pattern.matcher(loggedPassword);
@@ -154,7 +155,7 @@ public class StudentManager {
 
     String loggedEmail = "default@example.com";
     private String getValidEmail(){
-        loggedEmail = getInput("Email");
+        loggedEmail = getInput("Email (e.g. example@example.com)");
         String emailPattern = "^(.+)@(.+)?\\.[a-zA-Z]{2,15}$"; //Guarantees the @ symbol and .com etc
         Pattern pattern = Pattern.compile((emailPattern));
         Matcher matcher = pattern.matcher(loggedEmail);
@@ -179,9 +180,33 @@ public class StudentManager {
     }
 
     public void displayRemoveStudent() {
+        printAvailableStudents();
         int removingCAONum = Integer.parseInt(getInput("CAO Number of the student to be removed"));
-
         removeStudent(removingCAONum);
+    }
+
+    private void printAvailableStudents(){
+        String availableCourseCodes = getSortedKeys(studentsMap);
+        System.out.println(IColours.BLUE + "Available Students: " + availableCourseCodes + IColours.RESET);
+    }
+
+    private String getSortedKeys(HashMap mapToSort)
+    {
+        ArrayList<Integer> sortedKeys = new ArrayList<Integer>(mapToSort.keySet());
+        Collections.sort(sortedKeys);
+
+        StringBuilder keyList = new StringBuilder("[");
+        int index = 0;
+        for (Integer key : sortedKeys) {
+            if(index != sortedKeys.size()-1)
+                keyList.append(key).append(", ");
+            else
+                keyList.append(key);
+            index++;
+        }
+        keyList.append("]");
+
+        return keyList.toString();
     }
 
     // Adapted from my CA3 submission
